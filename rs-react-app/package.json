@@ -10,6 +10,7 @@
     "lint:fix": "eslint . --fix",
     "preview": "vite preview",
     "format:fix": "prettier --write .",
+    "pre-commit": "eslint . --fix && prettier --write .",
     "prepare": "husky"
   },
   "dependencies": {
