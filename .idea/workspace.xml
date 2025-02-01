@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f5afc939-46b7-474c-8329-cca684375e4c" name="Changes" comment="feat: add search feature &amp;&amp; error handling">
-      <change afterPath="$PROJECT_DIR$/rs-react-app/src/components/Spinner.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rs-react-app/src/components/Spinner.tsx" afterDir="false" />
+    <list default="true" id="f5afc939-46b7-474c-8329-cca684375e4c" name="Changes" comment="feat: add styles">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rs-react-app/src/components/SearchResults.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/rs-react-app/src/components/SearchResults.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rs-react-app/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/rs-react-app/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,7 +39,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SONARLINT_PRECOMMIT_ANALYSIS": "false",
-    "last_opened_file_path": "C:/Users/Anastasiya_Mianko/app/RS_Angular/Maxim/youtube-client-app",
+    "last_opened_file_path": "C:/Users/Anastasiya_Mianko/app/hit-web-folder/hit-web",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -65,7 +63,7 @@
       <option name="presentableId" value="Default" />
       <updated>1738240274868</updated>
       <workItem from="1738240276130" duration="5096000" />
-      <workItem from="1738351922676" duration="14725000" />
+      <workItem from="1738351922676" duration="25468000" />
     </task>
     <task id="LOCAL-00001" summary="init: start task">
       <option name="closed" value="true" />
@@ -107,7 +105,23 @@
       <option name="project" value="LOCAL" />
       <updated>1738413386762</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="feat: add search feature &amp;&amp; error handling">
+      <option name="closed" value="true" />
+      <created>1738414125233</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1738414125233</updated>
+    </task>
+    <task id="LOCAL-00007" summary="feat: add styles">
+      <option name="closed" value="true" />
+      <created>1738433532490</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1738433532490</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -117,6 +131,7 @@
     <MESSAGE value="init: start task" />
     <MESSAGE value="init: add linter settings" />
     <MESSAGE value="feat: add search feature &amp;&amp; error handling" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: add search feature &amp;&amp; error handling" />
+    <MESSAGE value="feat: add styles" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: add styles" />
   </component>
 </project>

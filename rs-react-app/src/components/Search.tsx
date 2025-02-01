@@ -8,6 +8,7 @@ type SearchState = {
 type SearchProps = {
     onSearch: (searchTerm: string) => void,
     initialSearchTerm?: string,
+    isLoading: boolean,
 }
 
 class Search extends React.Component<SearchProps, SearchState> {
@@ -23,17 +24,22 @@ class Search extends React.Component<SearchProps, SearchState> {
     }
 
     handleSearch = async () => {
-        localStorage.setItem('searchTerm', this.state.searchTerm);
-        this.props.onSearch(this.state.searchTerm);
+        const searchTerm = this.state.searchTerm.trim();
+        localStorage.setItem('searchTerm', searchTerm);
+        this.props.onSearch(searchTerm);
     }
 
     render() {
-        return <div>
+        return <div className='search'>
             <input
+                disabled={this.props.isLoading}
+                className='search-input'
                 defaultValue={this.state.searchTerm}
                 onInput={this.handleInputChange}
             />
             <button
+                disabled={this.props.isLoading}
+                className='search-button'
                 onClick={this.handleSearch}
             >Search
             </button>

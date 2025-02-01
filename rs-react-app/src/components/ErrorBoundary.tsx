@@ -1,4 +1,5 @@
 import React, { ReactNode } from "react";
+import './ErrorBoundary.css';
 
 interface ErrorBoundaryState {
     hasError?: boolean | null;
@@ -32,13 +33,13 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
     render() {
         if (this.state.hasError) {
             return (
-                <div>
-                    <h2>Oops! Something went wrong.</h2>
-                    <details style={{ whiteSpace: 'pre-wrap' }}>
+                <div className='error'>
+                    <h2 className='error-text'>Oops! Something went wrong.</h2>
+                    <div className='error-details'>
                         {this.state.error?.toString()}
                         <br />
-                        {this.state.errorInfo?.componentStack}
-                    </details>
+                        <p className='error-info'>{this.state.errorInfo?.componentStack}</p>
+                    </div>
                 </div>
             );
         }

@@ -1,4 +1,5 @@
 import React from "react";
+import './ErrorButton.css';
 
 type ErrorButtonState = {
     hasError: boolean,
@@ -22,6 +23,7 @@ class ErrorButton extends React.Component<{}, ErrorButtonState> {
         }
 
         return <button
+            className='error-button'
             onClick={this.triggerError}
         >Click me to throw an error</button>;
     }

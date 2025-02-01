@@ -32,7 +32,7 @@ class App extends React.Component<{}, AppState> {
         this.setState({ isLoading: true, error: null, searchTerm });
 
         try {
-            const response = await fetch(`https://api.github.com/search/repositories?q=${searchTerm || 'react'}&page=1&per_page=10`);
+            const response = await fetch(`https://api.github.com/search/repositories?q=${searchTerm || 'react'}&page=0&per_page=10`);
             const data: GithubRepoResponseDto = await response.json();
             this.setState({ searchResults: data.items, isLoading: false });
         } catch (error) {
@@ -42,8 +42,9 @@ class App extends React.Component<{}, AppState> {
 
     render() {
         const { searchTerm, isLoading, error, searchResults } = this.state;
-        return <div>
+        return <div className='app-wrapper'>
             <Search
+                isLoading={Boolean(isLoading)}
                 onSearch={this.searchItems}
                 searchItems={this.searchItems}
                 initialSearchTerm={searchTerm}
@@ -54,7 +55,7 @@ class App extends React.Component<{}, AppState> {
                 isLoading={Boolean(isLoading)}
                 error={error || ''}
             />
-            <ErrorButton/>
+            {!isLoading && <ErrorButton/>}
         </div>
     }
 }
