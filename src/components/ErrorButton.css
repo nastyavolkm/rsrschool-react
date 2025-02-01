@@ -1,0 +1,18 @@
+.error-button {
+  cursor: pointer;
+  border: 1px solid #ff6464;
+  border-radius: 10px;
+  height: 36px;
+  color: #ff6464;
+  background: none;
+  padding: 10px;
+  align-self: flex-end;
+  margin-top: auto;
+
+  &:hover,
+  &:active {
+    border-color: #ff6464;
+    color: #fff;
+    background: #ff6464;
+  }
+}

@@ -1,0 +1,34 @@
+.search-results {
+  .search-results-items {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .search-results-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    text-align: center;
+
+    span {
+      font-size: 0.9em;
+    }
+  }
+
+  .search-results-no-results {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+
+    span {
+      font-size: 0.9em;
+    }
+  }
+}
