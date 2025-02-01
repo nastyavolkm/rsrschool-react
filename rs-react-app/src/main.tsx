@@ -1,14 +1,16 @@
 import React from 'react';
-import ReactDOM from 'react-dom'
-import './index.css'
-import App from './App.tsx'
-import ErrorBoundary from "./components/ErrorBoundary.tsx";
+import './index.css';
+import App from './App.tsx';
+import ErrorBoundary from './components/ErrorBoundary.tsx';
+import { createRoot } from 'react-dom/client';
 
-ReactDOM.render(
-    <React.StrictMode>
-        <ErrorBoundary>
-            <App/>
-        </ErrorBoundary>
-    </React.StrictMode>,
-    document.getElementById('root')
+const rootElement = document.getElementById('root');
+const root = createRoot(rootElement);
+
+root.render(
+  <React.StrictMode>
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
+  </React.StrictMode>
 );

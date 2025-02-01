@@ -1,5 +1,5 @@
-import { GithubRepoItemDto } from "./github-repo-item-dto.model.ts";
+import { GithubRepoItemDto } from './github-repo-item-dto.model.ts';
 
 export interface GithubRepoResponseDto {
-    items: GithubRepoItemDto[],
+  items: GithubRepoItemDto[];
 }
