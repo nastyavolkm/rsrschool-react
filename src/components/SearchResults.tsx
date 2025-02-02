@@ -11,7 +11,7 @@ interface SearchResultsProps {
   isCustomSearch: boolean;
 }
 
-class SearchResults extends React.Component<SearchResultsProps, void> {
+class SearchResults extends React.Component<SearchResultsProps, object> {
   render() {
     const { isLoading, error, results, isCustomSearch } = this.props;
     if (isLoading) return <Spinner />;

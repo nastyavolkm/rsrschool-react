@@ -12,7 +12,7 @@ type SearchProps = {
 };
 
 class Search extends React.Component<SearchProps, SearchState> {
-  constructor(props) {
+  constructor(props: SearchProps) {
     super(props);
     this.state = {
       searchTerm: this.props.initialSearchTerm || '',

@@ -13,8 +13,8 @@ interface AppState {
   error?: string | null;
 }
 
-class App extends React.Component<void, AppState> {
-  constructor(props) {
+class App extends React.Component<object, AppState> {
+  constructor(props: object) {
     super(props);
     this.state = {
       searchTerm: localStorage.getItem('searchTerm') || '',
@@ -37,8 +37,12 @@ class App extends React.Component<void, AppState> {
       );
       const data: GithubRepoResponseDto = await response.json();
       this.setState({ searchResults: data.items, isLoading: false });
-    } catch (error) {
-      this.setState({ error: error.message, isLoading: false });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        this.setState({ error: error.message, isLoading: false });
+      } else {
+        this.setState({ error: 'An unknown error occurred', isLoading: false });
+      }
     }
   };
 
@@ -49,7 +53,6 @@ class App extends React.Component<void, AppState> {
         <Search
           isLoading={Boolean(isLoading)}
           onSearch={this.searchItems}
-          searchItems={this.searchItems}
           initialSearchTerm={searchTerm}
         />
         <SearchResults

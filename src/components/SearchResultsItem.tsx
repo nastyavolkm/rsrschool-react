@@ -6,7 +6,10 @@ type SearchResultsItemProps = {
   item: GithubRepoItemDto;
 };
 
-class SearchResultsItem extends React.Component<SearchResultsItemProps, void> {
+class SearchResultsItem extends React.Component<
+  SearchResultsItemProps,
+  object
+> {
   render() {
     const { item } = this.props;
     return (

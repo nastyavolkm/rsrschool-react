@@ -1,7 +1,7 @@
 import React from 'react';
 import './Spinner.css';
 
-class Spinner extends React.Component<void, void> {
+class Spinner extends React.Component<object, object> {
   render() {
     return (
       <div className="spinner-container">

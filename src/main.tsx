@@ -5,12 +5,15 @@ import ErrorBoundary from './components/ErrorBoundary.tsx';
 import { createRoot } from 'react-dom/client';
 
 const rootElement = document.getElementById('root');
-const root = createRoot(rootElement);
-
-root.render(
-  <React.StrictMode>
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
-  </React.StrictMode>
-);
+if (rootElement) {
+  const root = createRoot(rootElement);
+  root.render(
+    <React.StrictMode>
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    </React.StrictMode>
+  );
+} else {
+  console.error('Failed to find the root element');
+}

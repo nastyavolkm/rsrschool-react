@@ -5,8 +5,8 @@ type ErrorButtonState = {
   hasError: boolean;
 };
 
-class ErrorButton extends React.Component<void, ErrorButtonState> {
-  constructor(props) {
+class ErrorButton extends React.Component<object, ErrorButtonState> {
+  constructor(props: object) {
     super(props);
     this.state = {
       hasError: false,
