@@ -9,8 +9,7 @@ type SearchResultsItemProps = {
 const SearchResultsItem: React.FC<SearchResultsItemProps> = ({ item }) => {
   return (
     <div className="search-item">
-      <h3>{item.name}</h3>
-      <p className="search-item-description">{item.description}</p>
+      <h3 className="search-item-name">{item.name}</h3>
       <p className="search-item-forks">Forks: {item.forks}</p>
     </div>
   );

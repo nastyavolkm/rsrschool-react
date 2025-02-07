@@ -20,6 +20,22 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   if (isLoading) return <Spinner />;
   if (error) return <p style={{ color: 'red' }}>Error: {error}</p>;
 
+  const renderResults = () => {
+    if (results?.length > 0) {
+      return results.map((result, index) => (
+        <div key={index}>
+          <SearchResultsItem item={result} />
+        </div>
+      ));
+    }
+    return (
+      <div className="search-results-no-results">
+        <p>Oops! Seems like we found nothing.</p>
+        <span>Try to change your request.</span>
+      </div>
+    );
+  };
+
   return (
     <div className="search-results">
       {isCustomSearch && (
@@ -31,19 +47,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
           </span>
         </div>
       )}
-      <div className="search-results-items">
-        {!results?.length && (
-          <div className="search-results-no-results">
-            <p>Oops! Seems like we found nothing.</p>
-            <span>Try to change your request.</span>
-          </div>
-        )}
-        {results.map((result, index) => (
-          <div key={index}>
-            <SearchResultsItem item={result} />
-          </div>
-        ))}
-      </div>
+      <div className="search-results-items">{renderResults()}</div>
     </div>
   );
 };

@@ -5,39 +5,56 @@ import { GithubRepoResponseDto } from '../../models/github-repo-response-dto.mod
 import Search from '../search/Search.tsx';
 import SearchResults from '../search-results/SearchResults.tsx';
 import ErrorButton from '../error-button/ErrorButton.tsx';
+import Pagination from '../pagination/Pagination.tsx';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+const ITEMS_PER_PAGE = 12;
 
 const Main: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const searchParams = new URLSearchParams(location.search);
+
   const [searchTerm, setSearchTerm] = useState<string>(
-    localStorage.getItem('searchTerm') || ''
+    () => localStorage.getItem('searchTerm') || ''
   );
   const [searchResults, setSearchResults] = useState<GithubRepoItemDto[]>([]);
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(
+    Number(searchParams.get('page')) || 1
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>('');
 
   useEffect(() => {
-    searchItems(searchTerm);
-  }, [searchTerm]);
+    const abortController = new AbortController();
+    (async () => {
+      setIsLoading(true);
+      setError(null);
 
-  const searchItems = async (searchTerm: string) => {
-    setIsLoading(true);
-    setError(null);
-    setSearchTerm(searchTerm);
-
-    try {
-      const response = await fetch(
-        `https://api.github.com/search/repositories?q=${searchTerm || 'react'}&page=0&per_page=10`
-      );
-      const data: GithubRepoResponseDto = await response.json();
-      setSearchResults(data.items);
-      setIsLoading(false);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        setError(error.message);
-      } else {
-        setError('An unknown error occurred');
+      try {
+        const response = await fetch(
+          `https://api.github.com/search/repositories?q=${searchTerm || 'react'}&page=${currentPage}&per_page=${ITEMS_PER_PAGE}`
+        );
+        const data: GithubRepoResponseDto = await response.json();
+        setSearchResults(data.items);
+        setTotalCount(data.total_count);
+        setIsLoading(false);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError('An unknown error occurred');
+        }
+        setIsLoading(false);
       }
-      setIsLoading(false);
-    }
+    })();
+    return () => abortController.abort();
+  }, [searchTerm, currentPage]);
+
+  const updateCurrentPage = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    navigate(`?page=${pageNumber}`, { replace: true });
   };
 
   return (
@@ -53,6 +70,14 @@ const Main: React.FC = () => {
         isLoading={isLoading}
         error={error || ''}
       />
+      {searchResults?.length > 0 && (
+        <Pagination
+          totalItems={totalCount}
+          paginate={updateCurrentPage}
+          itemsPerPage={ITEMS_PER_PAGE}
+          currentPageNumber={currentPage}
+        />
+      )}
       {!isLoading && <ErrorButton />}
     </div>
   );

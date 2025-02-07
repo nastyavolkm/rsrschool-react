@@ -1,0 +1,26 @@
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+
+    .page-item {
+        list-style: none;
+    }
+
+    .page-link {
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        background: #cbd1f2;
+        color: #100556;
+
+        &:disabled {
+            cursor: not-allowed;
+        }
+
+        &.active {
+            cursor: default;
+            background: #747bff;
+        }
+    }
+}
