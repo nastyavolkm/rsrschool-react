@@ -4,14 +4,3 @@
   color: #3b468a;
   height: 100%;
 }
-
-.app-wrapper {
-  width: 100%;
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 40px;
-  padding: 20px 60px;
-  justify-content: flex-start;
-}
