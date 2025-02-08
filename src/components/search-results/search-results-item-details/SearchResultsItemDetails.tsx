@@ -24,7 +24,11 @@ const SearchResultsItemDetails: React.FC = () => {
             ` https://api.github.com/repositories/${id}`
           );
           const data = await response.json();
-          setItem(data);
+          if (data.message) {
+            setError(data.message);
+          } else {
+            setItem(data);
+          }
         }
       } catch (error: unknown) {
         if (error instanceof Error) {
@@ -41,7 +45,7 @@ const SearchResultsItemDetails: React.FC = () => {
 
   const renderResults = () => {
     if (isLoading) return <Spinner />;
-    if (error) return <p style={{ color: 'red' }}>Error: {error}</p>;
+    if (error) return <p style={{ color: '#ff6464' }}>Error: {error}</p>;
     if (!item) return <p>Item not found</p>;
     return (
       <div className="search-item-details-card">
