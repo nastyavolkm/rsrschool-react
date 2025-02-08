@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Main.css';
 import { GithubRepoItemDto } from '../../models/github-repo-item-dto.model.ts';
 import { GithubRepoResponseDto } from '../../models/github-repo-response-dto.model.ts';
@@ -7,10 +7,12 @@ import SearchResults from '../search-results/SearchResults.tsx';
 import ErrorButton from '../error-button/ErrorButton.tsx';
 import Pagination from '../pagination/Pagination.tsx';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router';
 
 const ITEMS_PER_PAGE = 12;
 
 const Main: React.FC = () => {
+  const childRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
@@ -52,33 +54,58 @@ const Main: React.FC = () => {
     return () => abortController.abort();
   }, [searchTerm, currentPage]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        !event.target.className.includes('search-item-card') &&
+        childRef?.current &&
+        childRef.current.contains(event.target)
+      ) {
+        navigate(`/${location.search}`);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [navigate, location.search]);
+
   const updateCurrentPage = (pageNumber: number) => {
     setCurrentPage(pageNumber);
     navigate(`?page=${pageNumber}`, { replace: true });
   };
 
+  const handleSearchTermChange = (newSearchTerm: string) => {
+    setSearchTerm(newSearchTerm);
+    updateCurrentPage(1);
+  };
+
   return (
-    <div className="main-wrapper">
-      <Search
-        isLoading={isLoading}
-        onSearch={setSearchTerm}
-        initialSearchTerm={searchTerm}
-      />
-      <SearchResults
-        isCustomSearch={!searchTerm}
-        results={searchResults || []}
-        isLoading={isLoading}
-        error={error || ''}
-      />
-      {searchResults?.length > 0 && (
-        <Pagination
-          totalItems={totalCount}
-          paginate={updateCurrentPage}
-          itemsPerPage={ITEMS_PER_PAGE}
-          currentPageNumber={currentPage}
+    <div className="main">
+      <div className="main-wrapper" ref={childRef}>
+        <Search
+          isLoading={isLoading}
+          onSearch={handleSearchTermChange}
+          initialSearchTerm={searchTerm}
         />
-      )}
-      {!isLoading && <ErrorButton />}
+        <SearchResults
+          isCustomSearch={!searchTerm}
+          results={searchResults || []}
+          isLoading={isLoading}
+          error={error || ''}
+        />
+        {searchResults?.length > 0 && (
+          <Pagination
+            totalItems={totalCount}
+            paginate={updateCurrentPage}
+            itemsPerPage={ITEMS_PER_PAGE}
+            currentPageNumber={currentPage}
+          />
+        )}
+        {!isLoading && <ErrorButton />}
+      </div>
+      <Outlet />
     </div>
   );
 };

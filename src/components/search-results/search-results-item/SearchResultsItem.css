@@ -19,26 +19,6 @@
     width: 100%;
   }
 
-  .search-item-description {
-    overflow: auto;
-    font-size: 0.9em;
-
-    &::-webkit-scrollbar {
-      width: 0.4em;
-      height: 0.4em;
-    }
-
-    &::-webkit-scrollbar-track {
-      background-color: #e0e0e0;
-      border-radius: 10px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: #888;
-      border-radius: 10px;
-    }
-  }
-
   .search-item-forks {
     margin-top: auto;
   }

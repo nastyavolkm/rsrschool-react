@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Pagination.css';
 
 type PaginationProps = {
@@ -16,6 +16,10 @@ const Pagination: React.FC<PaginationProps> = ({
 }) => {
   const [currentPage, setCurrentPage] = useState(currentPageNumber);
   const [pageWindowStart, setPageWindowStart] = useState(0);
+
+  useEffect(() => {
+    setCurrentPage(currentPageNumber);
+  }, [currentPageNumber]);
 
   const pageNumbers = Array.from(
     { length: Math.ceil(totalItems / itemsPerPage) },

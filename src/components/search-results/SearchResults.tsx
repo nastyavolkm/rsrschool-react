@@ -23,9 +23,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   const renderResults = () => {
     if (results?.length > 0) {
       return results.map((result, index) => (
-        <div key={index}>
-          <SearchResultsItem item={result} />
-        </div>
+        <SearchResultsItem key={index} item={result} />
       ));
     }
     return (
