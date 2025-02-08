@@ -1,5 +1,5 @@
 export interface GithubRepoItemDto {
-  id: string;
+  id: number;
   name: string;
   description: string;
   forks: number;

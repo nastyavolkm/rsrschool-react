@@ -68,7 +68,11 @@
   }
 
   .search-item-details-link {
-    color: #100556;
+    color: #3b468a;
     margin-top: auto;
+
+    &:hover {
+      color: #100556;
+    }
   }
 }

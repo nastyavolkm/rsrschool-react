@@ -24,7 +24,6 @@ const Search: React.FC<SearchProps> = ({
 
   const handleSearch = async () => {
     const trimmedTerm = searchTerm.trim();
-    localStorage.setItem('searchTerm', trimmedTerm);
     onSearch(trimmedTerm);
   };
 

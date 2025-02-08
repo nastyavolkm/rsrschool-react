@@ -12,6 +12,10 @@
   text-align: center;
   cursor: pointer;
 
+  &.active {
+    border-color: #747bff;
+  }
+
   .search-item-name {
     overflow: hidden;
     text-overflow: ellipsis;

@@ -8,6 +8,7 @@ import ErrorButton from '../error-button/ErrorButton.tsx';
 import Pagination from '../pagination/Pagination.tsx';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Outlet } from 'react-router';
+import useSearchTerm from '../../hooks/useSearchTerm.tsx';
 
 const ITEMS_PER_PAGE = 12;
 
@@ -16,10 +17,7 @@ const Main: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
-
-  const [searchTerm, setSearchTerm] = useState<string>(
-    () => localStorage.getItem('searchTerm') || ''
-  );
+  const [searchTerm, setSearchTerm] = useSearchTerm();
   const [searchResults, setSearchResults] = useState<GithubRepoItemDto[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(
