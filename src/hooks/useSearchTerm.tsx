@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
-function useSearchTerm() {
+function useSearchTerm(): [string, Dispatch<SetStateAction<string>>] {
   const SEARCH_TERM = 'searchTerm';
   const [term, setTerm] = useState(() => {
     return localStorage.getItem(SEARCH_TERM) || '';

@@ -1,54 +1,61 @@
 import React, { useEffect, useState } from 'react';
 import './Pagination.css';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 type PaginationProps = {
   itemsPerPage: number;
   totalItems: number;
   paginate: (pageNumber: number) => void;
-  currentPageNumber: number;
 };
 
 const Pagination: React.FC<PaginationProps> = ({
   itemsPerPage,
   totalItems,
   paginate,
-  currentPageNumber,
 }) => {
-  const [currentPage, setCurrentPage] = useState(currentPageNumber);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const pageFromParams = new URLSearchParams(location.search).get('page');
+  const [currentPage, setCurrentPage] = useState(pageFromParams || '1');
   const [pageWindowStart, setPageWindowStart] = useState(0);
 
   useEffect(() => {
-    setCurrentPage(currentPageNumber);
-  }, [currentPageNumber]);
+    if (!pageFromParams) {
+      navigate(`?page=1`);
+    }
+    setCurrentPage(pageFromParams || '1');
+  }, [currentPage, pageFromParams, navigate]);
 
   const pageNumbers = Array.from(
     { length: Math.ceil(totalItems / itemsPerPage) },
-    (_, i) => i + 1
+    (_, i) => (i + 1).toString()
   );
   const maxPagesVisible = 5;
 
   const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
+    setCurrentPage(pageNumber.toString());
     paginate(pageNumber);
+    navigate(`?page=${pageNumber}`);
 
-    if (pageNumber >= pageWindowStart + maxPagesVisible) {
-      setPageWindowStart(
-        pageWindowStart + (pageNumber - (pageWindowStart + maxPagesVisible - 1))
-      );
-    } else if (pageNumber <= pageWindowStart) {
-      setPageWindowStart(pageWindowStart - (pageWindowStart - pageNumber + 1));
+    if (pageNumber > pageWindowStart + maxPagesVisible - 1) {
+      setPageWindowStart(pageNumber - maxPagesVisible + 1);
+    } else if (pageNumber < pageWindowStart + 1) {
+      setPageWindowStart(Math.max(0, pageNumber - 1));
     }
   };
 
   const nextWindow = () => {
+    const maxStartIndex = pageNumbers.length - maxPagesVisible;
     if (pageWindowStart + maxPagesVisible < pageNumbers.length) {
-      setPageWindowStart(pageWindowStart + maxPagesVisible);
+      setPageWindowStart(
+        Math.min(pageWindowStart + maxPagesVisible, maxStartIndex)
+      );
     }
   };
 
   const prevWindow = () => {
     if (pageWindowStart > 0) {
-      setPageWindowStart(pageWindowStart - maxPagesVisible);
+      setPageWindowStart(Math.max(0, pageWindowStart - maxPagesVisible));
     }
   };
 
@@ -71,7 +78,7 @@ const Pagination: React.FC<PaginationProps> = ({
           .map((number) => (
             <li key={number} className="page-item">
               <button
-                onClick={() => handlePageChange(number)}
+                onClick={() => handlePageChange(Number(number))}
                 className={
                   number === currentPage ? 'page-link active' : 'page-link'
                 }

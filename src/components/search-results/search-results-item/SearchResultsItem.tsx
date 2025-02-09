@@ -1,8 +1,8 @@
 import React from 'react';
 import './SearchResultsItem.css';
-import { GithubRepoItemDto } from '../../../models/github-repo-item-dto.model.ts';
 import { Link, useLocation } from 'react-router-dom';
 import { useParams } from 'react-router';
+import { GithubRepoItemDto } from '../../../models/github-repo-item-dto.model';
 
 type SearchResultsItemProps = {
   item: GithubRepoItemDto;
@@ -11,10 +11,12 @@ type SearchResultsItemProps = {
 const SearchResultsItem: React.FC<SearchResultsItemProps> = ({ item }) => {
   const location = useLocation();
   const { id } = useParams();
+
   return (
     <Link
+      data-testid="search-results-item"
       className="search-item-card"
-      to={`details/${item.id}${location.search}`}
+      to={`${item.id.toString() === id ? `/${location.search}` : `details/${item.id}${location.search}`}`}
     >
       <div
         className={

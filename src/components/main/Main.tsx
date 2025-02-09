@@ -1,29 +1,28 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Main.css';
-import { GithubRepoItemDto } from '../../models/github-repo-item-dto.model.ts';
-import { GithubRepoResponseDto } from '../../models/github-repo-response-dto.model.ts';
-import Search from '../search/Search.tsx';
-import SearchResults from '../search-results/SearchResults.tsx';
-import ErrorButton from '../error-button/ErrorButton.tsx';
-import Pagination from '../pagination/Pagination.tsx';
+import Search from '../search/Search';
+import SearchResults from '../search-results/SearchResults';
+import ErrorButton from '../error-button/ErrorButton';
+import Pagination from '../pagination/Pagination';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Outlet } from 'react-router';
-import useSearchTerm from '../../hooks/useSearchTerm.tsx';
+import useSearchTerm from '../../hooks/useSearchTerm';
+import { GithubRepoItemDto } from '../../models/github-repo-item-dto.model';
+import { GithubRepoResponseDto } from '../../models/github-repo-response-dto.model';
 
 const ITEMS_PER_PAGE = 12;
 
 const Main: React.FC = () => {
-  const childRef = useRef(null);
+  const childRef = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
-  const searchParams = new URLSearchParams(location.search);
   const [searchTerm, setSearchTerm] = useSearchTerm();
   const [searchResults, setSearchResults] = useState<GithubRepoItemDto[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
-  const [currentPage, setCurrentPage] = useState<number>(
-    Number(searchParams.get('page')) || 1
-  );
   const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(
+    new URLSearchParams(location.search).get('page') || '1'
+  );
   const [error, setError] = useState<string | null>('');
 
   useEffect(() => {
@@ -34,7 +33,7 @@ const Main: React.FC = () => {
 
       try {
         const response = await fetch(
-          `https://api.github.com/search/repositories?q=${searchTerm || 'react'}&page=${currentPage}&per_page=${ITEMS_PER_PAGE}`
+          `https://api.github.com/search/repositories?q=${searchTerm || 'react'}&page=${currentPage || 1}&per_page=${ITEMS_PER_PAGE}`
         );
         const data: GithubRepoResponseDto = await response.json();
         setSearchResults(data.items);
@@ -53,11 +52,11 @@ const Main: React.FC = () => {
   }, [searchTerm, currentPage]);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const eventTarget = event.target as HTMLElement;
       if (
-        !event.target.className.includes('search-item-card') &&
-        childRef?.current &&
-        childRef.current.contains(event.target)
+        !eventTarget.className.includes('search-item-card') &&
+        childRef?.current?.contains(eventTarget)
       ) {
         navigate(`/${location.search}`);
       }
@@ -69,14 +68,14 @@ const Main: React.FC = () => {
     };
   }, [navigate, location.search]);
 
-  const updateCurrentPage = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-    navigate(`?page=${pageNumber}`, { replace: true });
-  };
-
   const handleSearchTermChange = (newSearchTerm: string) => {
     setSearchTerm(newSearchTerm);
-    updateCurrentPage(1);
+    setCurrentPage('1');
+    navigate(`?page=1`);
+  };
+
+  const updateCurrentPage = (pageNumber: number) => {
+    setCurrentPage(pageNumber.toString());
   };
 
   return (
@@ -95,10 +94,9 @@ const Main: React.FC = () => {
         />
         {searchResults?.length > 0 && (
           <Pagination
-            totalItems={totalCount}
             paginate={updateCurrentPage}
+            totalItems={totalCount}
             itemsPerPage={ITEMS_PER_PAGE}
-            currentPageNumber={currentPage}
           />
         )}
         {!isLoading && <ErrorButton />}

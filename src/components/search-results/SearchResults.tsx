@@ -1,8 +1,8 @@
 import React from 'react';
 import './SearchResults.css';
-import { GithubRepoItemDto } from '../../models/github-repo-item-dto.model.ts';
-import Spinner from '../spinner/Spinner.tsx';
-import SearchResultsItem from './search-results-item/SearchResultsItem.tsx';
+import { GithubRepoItemDto } from '../../models/github-repo-item-dto.model';
+import SearchResultsItem from './search-results-item/SearchResultsItem';
+import Spinner from '../spinner/Spinner';
 
 interface SearchResultsProps {
   results: GithubRepoItemDto[];
@@ -18,7 +18,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   isCustomSearch,
 }) => {
   if (isLoading) return <Spinner />;
-  if (error) return <p style={{ color: 'red' }}>Error: {error}</p>;
+  if (error) return <p style={{ color: '#ff6464' }}>Error: {error}</p>;
 
   const renderResults = () => {
     if (results?.length > 0) {
@@ -40,8 +40,8 @@ const SearchResults: React.FC<SearchResultsProps> = ({
         <div className="search-results-hint">
           <h3>Here you can see all possible react.js related repositories</h3>
           <span>
-            If you want to see some specific please type into a search field and
-            click &quot;Search&quot; button
+            To see other type into a search field and click &quot;Search&quot;
+            button
           </span>
         </div>
       )}

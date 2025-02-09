@@ -1,9 +1,8 @@
 import './App.css';
-import React from 'react';
-import Main from './components/main/Main.tsx';
+import Main from './components/main/Main';
 import { Route, Routes } from 'react-router';
-import SearchResultsItemDetails from './components/search-results/search-results-item-details/SearchResultsItemDetails.tsx';
-import NotFound from './components/not-found/NotFound.tsx';
+import SearchResultsItemDetails from './components/search-results/search-results-item-details/SearchResultsItemDetails';
+import NotFound from './components/not-found/NotFound';
 
 const App = () => {
   return (

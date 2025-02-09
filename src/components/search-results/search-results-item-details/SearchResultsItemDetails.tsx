@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import './SearchResultsItemDetails.css';
 import { useParams } from 'react-router';
-import { GithubRepoItemDto } from '../../../models/github-repo-item-dto.model.ts';
-import Spinner from '../../spinner/Spinner.tsx';
+import Spinner from '../../spinner/Spinner';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { GithubRepoItemDto } from '../../../models/github-repo-item-dto.model';
 
 const SearchResultsItemDetails: React.FC = () => {
   const { id } = useParams();
   const location = useLocation();
-  const [item, setItem] = useState<GithubRepoItemDto>(null);
-  const [error, setError] = useState<string>(null);
+  const [item, setItem] = useState<GithubRepoItemDto | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -21,7 +21,7 @@ const SearchResultsItemDetails: React.FC = () => {
       try {
         if (id) {
           const response = await fetch(
-            ` https://api.github.com/repositories/${id}`
+            `https://api.github.com/repositories/${id}`
           );
           const data = await response.json();
           if (data.message) {
