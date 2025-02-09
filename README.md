@@ -1,6 +1,6 @@
 # React.js application for search GitHub repositories
 
-To run clone the repo and checkout to class-components branch.
+To run clone the repo and checkout to hooks-and-rounting branch.
 Run npm install.
 Run npm run dev.
 
