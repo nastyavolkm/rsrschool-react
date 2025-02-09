@@ -1,0 +1,29 @@
+.search-item {
+  width: 200px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-start;
+  border: 1px solid #cbd1f2;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+
+  &.active {
+    border-color: #747bff;
+  }
+
+  .search-item-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+  }
+
+  .search-item-forks {
+    margin-top: auto;
+  }
+}
