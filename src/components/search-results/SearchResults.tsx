@@ -3,6 +3,7 @@ import './SearchResults.css';
 import { GithubRepoItemDto } from '../../models/github-repo-item-dto.model';
 import SearchResultsItem from './search-results-item/SearchResultsItem';
 import Spinner from '../spinner/Spinner';
+import { Outlet } from 'react-router';
 
 interface SearchResultsProps {
   results: GithubRepoItemDto[];
@@ -17,10 +18,10 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   error,
   isCustomSearch,
 }) => {
-  if (isLoading) return <Spinner />;
-  if (error) return <p style={{ color: '#ff6464' }}>Error: {error}</p>;
-
   const renderResults = () => {
+    if (isLoading) return <Spinner />;
+    if (error) return <p style={{ color: '#ff6464' }}>Error: {error}</p>;
+
     if (results?.length > 0) {
       return results.map((result, index) => (
         <SearchResultsItem key={index} item={result} />
@@ -35,17 +36,20 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   };
 
   return (
-    <div className="search-results">
-      {isCustomSearch && (
-        <div className="search-results-hint">
-          <h3>Here you can see all possible react.js related repositories</h3>
-          <span>
-            To see other type into a search field and click &quot;Search&quot;
-            button
-          </span>
-        </div>
-      )}
-      <div className="search-results-items">{renderResults()}</div>
+    <div className="search-results-wrapper">
+      <div className="search-results">
+        {isCustomSearch && (
+          <div className="search-results-hint">
+            <h3>Here you can see all possible react.js related repositories</h3>
+            <span>
+              To see other type into a search field and click &quot;Search&quot;
+              button
+            </span>
+          </div>
+        )}
+        <div className="search-results-items">{renderResults()}</div>
+      </div>
+      <Outlet />
     </div>
   );
 };
