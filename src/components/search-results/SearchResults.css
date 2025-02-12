@@ -1,6 +1,13 @@
-.search-results {
+.search-results-wrapper {
+  display: flex;
   max-height: 60vh;
+}
+
+.search-results {
+  flex: 1;
   overflow: auto;
+  display: flex;
+  justify-content: center;
 
   &::-webkit-scrollbar {
     width: 0.4em;

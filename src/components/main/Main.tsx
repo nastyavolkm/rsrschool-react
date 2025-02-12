@@ -5,7 +5,6 @@ import SearchResults from '../search-results/SearchResults';
 import ErrorButton from '../error-button/ErrorButton';
 import Pagination from '../pagination/Pagination';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Outlet } from 'react-router';
 import useSearchTerm from '../../hooks/useSearchTerm';
 import { GithubRepoItemDto } from '../../models/github-repo-item-dto.model';
 import { GithubRepoResponseDto } from '../../models/github-repo-response-dto.model';
@@ -79,19 +78,21 @@ const Main: React.FC = () => {
   };
 
   return (
-    <div className="main">
-      <div className="main-wrapper" ref={childRef}>
-        <Search
-          isLoading={isLoading}
-          onSearch={handleSearchTermChange}
-          initialSearchTerm={searchTerm}
-        />
+    <div className="main-wrapper">
+      <Search
+        isLoading={isLoading}
+        onSearch={handleSearchTermChange}
+        initialSearchTerm={searchTerm}
+      />
+      <div className="main-results-wrapper" ref={childRef}>
         <SearchResults
           isCustomSearch={!searchTerm}
           results={searchResults || []}
           isLoading={isLoading}
           error={error || ''}
         />
+      </div>
+      <footer className="footer">
         {searchResults?.length > 0 && (
           <Pagination
             paginate={updateCurrentPage}
@@ -100,8 +101,7 @@ const Main: React.FC = () => {
           />
         )}
         {!isLoading && <ErrorButton />}
-      </div>
-      <Outlet />
+      </footer>
     </div>
   );
 };
