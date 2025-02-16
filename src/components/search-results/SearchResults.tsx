@@ -1,9 +1,9 @@
 import React from 'react';
 import './SearchResults.css';
 import { GithubRepoItemDto } from '../../models/github-repo-item-dto.model';
-import SearchResultsItem from './search-results-item/SearchResultsItem';
-import Spinner from '../spinner/Spinner';
 import { Outlet } from 'react-router';
+import { Spinner } from '../spinner/Spinner';
+import { SearchResultsItem } from './search-results-item/SearchResultsItem';
 
 interface SearchResultsProps {
   results: GithubRepoItemDto[];
@@ -12,29 +12,12 @@ interface SearchResultsProps {
   isCustomSearch: boolean;
 }
 
-const SearchResults: React.FC<SearchResultsProps> = ({
+export const SearchResults: React.FC<SearchResultsProps> = ({
   results,
   isLoading,
   error,
   isCustomSearch,
 }) => {
-  const renderResults = () => {
-    if (isLoading) return <Spinner />;
-    if (error) return <p style={{ color: '#ff6464' }}>Error: {error}</p>;
-
-    if (results?.length > 0) {
-      return results.map((result, index) => (
-        <SearchResultsItem key={index} item={result} />
-      ));
-    }
-    return (
-      <div className="search-results-no-results">
-        <p>Oops! Seems like we found nothing.</p>
-        <span>Try to change your request.</span>
-      </div>
-    );
-  };
-
   return (
     <div className="search-results-wrapper">
       <div className="search-results">
@@ -47,11 +30,22 @@ const SearchResults: React.FC<SearchResultsProps> = ({
             </span>
           </div>
         )}
-        <div className="search-results-items">{renderResults()}</div>
+        <div className="search-results-items">
+          {isLoading && <Spinner />}
+          {error && <p style={{ color: '#ff6464' }}>Error: {error}</p>}
+          {results?.length > 0 ? (
+            results.map((result, index) => (
+              <SearchResultsItem key={index} item={result} />
+            ))
+          ) : (
+            <div className="search-results-no-results">
+              <p>Oops! Seems like we found nothing.</p>
+              <span>Try to change your request.</span>
+            </div>
+          )}
+        </div>
       </div>
       <Outlet />
     </div>
   );
 };
-
-export default SearchResults;

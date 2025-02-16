@@ -8,7 +8,9 @@ type SearchResultsItemProps = {
   item: GithubRepoItemDto;
 };
 
-const SearchResultsItem: React.FC<SearchResultsItemProps> = ({ item }) => {
+export const SearchResultsItem: React.FC<SearchResultsItemProps> = ({
+  item,
+}) => {
   const location = useLocation();
   const { id } = useParams();
 
@@ -33,5 +35,3 @@ const SearchResultsItem: React.FC<SearchResultsItemProps> = ({ item }) => {
     </Link>
   );
 };
-
-export default SearchResultsItem;

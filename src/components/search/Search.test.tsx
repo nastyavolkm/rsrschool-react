@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import Search from './Search';
+import { Search } from './Search';
 
 describe('Search Component', () => {
   it('clicking the search button set searchTerm to props', async () => {

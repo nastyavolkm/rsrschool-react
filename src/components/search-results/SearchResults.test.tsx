@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
-import SearchResults from './SearchResults';
 import { GithubRepoItemDto } from '../../models/github-repo-item-dto.model';
 import { MemoryRouter } from 'react-router';
+import { SearchResults } from './SearchResults';
 
 describe('SearchResults Component', () => {
   it('should display the spinner when loading', () => {

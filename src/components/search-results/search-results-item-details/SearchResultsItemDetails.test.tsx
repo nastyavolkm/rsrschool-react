@@ -5,9 +5,8 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import SearchResultsItemDetails from './SearchResultsItemDetails';
 import { Route, Routes } from 'react-router';
-
+import { SearchResultsItemDetails } from './SearchResultsItemDetails';
 const mockedUsedNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({

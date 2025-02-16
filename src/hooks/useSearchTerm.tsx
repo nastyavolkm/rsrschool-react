@@ -1,7 +1,10 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { SEARCH_TERM } from '../constants/constants';
 
-function useSearchTerm(): [string, Dispatch<SetStateAction<string>>] {
-  const SEARCH_TERM = 'searchTerm';
+export const useSearchTerm: () => [
+  string,
+  Dispatch<SetStateAction<string>>,
+] = () => {
   const [term, setTerm] = useState(() => {
     return localStorage.getItem(SEARCH_TERM) || '';
   });
@@ -11,6 +14,4 @@ function useSearchTerm(): [string, Dispatch<SetStateAction<string>>] {
   }, [term]);
 
   return [term, setTerm];
-}
-
-export default useSearchTerm;
+};

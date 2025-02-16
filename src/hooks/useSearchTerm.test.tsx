@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import useSearchTerm from './useSearchTerm';
 import userEvent from '@testing-library/user-event';
+import { useSearchTerm } from './useSearchTerm';
 
 const TestComponent: React.FC = () => {
   const [searchTerm, setSearchTerm] = useSearchTerm();

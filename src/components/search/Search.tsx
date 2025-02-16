@@ -7,7 +7,7 @@ type SearchProps = {
   isLoading: boolean;
 };
 
-const Search: React.FC<SearchProps> = ({
+export const Search: React.FC<SearchProps> = ({
   onSearch,
   initialSearchTerm = '',
   isLoading,
@@ -45,5 +45,3 @@ const Search: React.FC<SearchProps> = ({
     </div>
   );
 };
-
-export default Search;

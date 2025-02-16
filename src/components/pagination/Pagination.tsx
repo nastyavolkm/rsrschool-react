@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import './Pagination.css';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { ITEMS_PER_PAGE, MAX_PAGES_VISIBLE } from '../../constants/constants';
 
 type PaginationProps = {
-  itemsPerPage: number;
   totalItems: number;
   paginate: (pageNumber: number) => void;
 };
 
-const Pagination: React.FC<PaginationProps> = ({
-  itemsPerPage,
+export const Pagination: React.FC<PaginationProps> = ({
   totalItems,
   paginate,
 }) => {
-  const location = useLocation();
   const navigate = useNavigate();
-  const pageFromParams = new URLSearchParams(location.search).get('page');
+  const [searchParams] = useSearchParams();
+  const pageFromParams = searchParams.get('page');
   const [currentPage, setCurrentPage] = useState(pageFromParams || '1');
   const [pageWindowStart, setPageWindowStart] = useState(0);
 
@@ -27,45 +26,44 @@ const Pagination: React.FC<PaginationProps> = ({
   }, [currentPage, pageFromParams, navigate]);
 
   const pageNumbers = Array.from(
-    { length: Math.ceil(totalItems / itemsPerPage) },
+    { length: Math.ceil(totalItems / ITEMS_PER_PAGE) },
     (_, i) => (i + 1).toString()
   );
-  const maxPagesVisible = 5;
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber.toString());
     paginate(pageNumber);
     navigate(`?page=${pageNumber}`);
 
-    if (pageNumber > pageWindowStart + maxPagesVisible - 1) {
-      setPageWindowStart(pageNumber - maxPagesVisible + 1);
+    if (pageNumber > pageWindowStart + MAX_PAGES_VISIBLE - 1) {
+      setPageWindowStart(pageNumber - MAX_PAGES_VISIBLE + 1);
     } else if (pageNumber < pageWindowStart + 1) {
       setPageWindowStart(Math.max(0, pageNumber - 1));
     }
   };
 
   const nextWindow = () => {
-    const maxStartIndex = pageNumbers.length - maxPagesVisible;
-    if (pageWindowStart + maxPagesVisible < pageNumbers.length) {
+    const maxStartIndex = pageNumbers.length - MAX_PAGES_VISIBLE;
+    if (pageWindowStart + MAX_PAGES_VISIBLE < pageNumbers.length) {
       setPageWindowStart(
-        Math.min(pageWindowStart + maxPagesVisible, maxStartIndex)
+        Math.min(pageWindowStart + MAX_PAGES_VISIBLE, maxStartIndex)
       );
     }
   };
 
   const prevWindow = () => {
     if (pageWindowStart > 0) {
-      setPageWindowStart(Math.max(0, pageWindowStart - maxPagesVisible));
+      setPageWindowStart(Math.max(0, pageWindowStart - MAX_PAGES_VISIBLE));
     }
   };
 
   return (
     <nav>
       <ul className="pagination">
-        {maxPagesVisible < pageNumbers.length && (
+        {MAX_PAGES_VISIBLE < pageNumbers.length && (
           <li className="page-item">
             <button
-              onClick={() => prevWindow()}
+              onClick={prevWindow}
               disabled={pageWindowStart === 0}
               className="page-link"
             >
@@ -74,7 +72,7 @@ const Pagination: React.FC<PaginationProps> = ({
           </li>
         )}
         {pageNumbers
-          .slice(pageWindowStart, pageWindowStart + maxPagesVisible)
+          .slice(pageWindowStart, pageWindowStart + MAX_PAGES_VISIBLE)
           .map((number) => (
             <li key={number} className="page-item">
               <button
@@ -87,11 +85,13 @@ const Pagination: React.FC<PaginationProps> = ({
               </button>
             </li>
           ))}
-        {maxPagesVisible < pageNumbers.length && (
+        {MAX_PAGES_VISIBLE < pageNumbers.length && (
           <li className="page-item">
             <button
-              disabled={pageWindowStart + maxPagesVisible >= pageNumbers.length}
-              onClick={() => nextWindow()}
+              disabled={
+                pageWindowStart + MAX_PAGES_VISIBLE >= pageNumbers.length
+              }
+              onClick={nextWindow}
               className="page-link"
             >
               Next
@@ -102,5 +102,3 @@ const Pagination: React.FC<PaginationProps> = ({
     </nav>
   );
 };
-
-export default Pagination;

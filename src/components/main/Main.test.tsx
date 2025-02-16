@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import Main from './Main';
 import { Route, Routes } from 'react-router';
+import { Main } from './Main';
 
 const mockData = {
   items: [

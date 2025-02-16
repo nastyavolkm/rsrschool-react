@@ -1,10 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route } from 'react-router-dom';
-import SearchResultsItem from './SearchResultsItem';
 import { GithubRepoItemDto } from '../../../models/github-repo-item-dto.model';
 import { Routes } from 'react-router';
-import SearchResultsItemDetails from '../search-results-item-details/SearchResultsItemDetails';
 import userEvent from '@testing-library/user-event';
+import { SearchResultsItem } from './SearchResultsItem';
+import { SearchResultsItemDetails } from '../search-results-item-details/SearchResultsItemDetails';
 
 global.fetch = jest.fn(() =>
   Promise.resolve({

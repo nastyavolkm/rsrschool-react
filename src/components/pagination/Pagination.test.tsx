@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import Pagination from './Pagination';
+import { Pagination } from './Pagination';
 
 const mockedUsedNavigate = jest.fn();
 
@@ -16,11 +16,7 @@ describe('Pagination Component', () => {
     const handlePageChange = jest.fn();
     render(
       <MemoryRouter initialEntries={['/?page=2']}>
-        <Pagination
-          itemsPerPage={5}
-          totalItems={70}
-          paginate={handlePageChange}
-        />
+        <Pagination totalItems={70} paginate={handlePageChange} />
       </MemoryRouter>
     );
 
