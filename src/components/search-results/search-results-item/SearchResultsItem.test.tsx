@@ -5,6 +5,8 @@ import { Routes } from 'react-router';
 import userEvent from '@testing-library/user-event';
 import { SearchResultsItem } from './SearchResultsItem';
 import { SearchResultsItemDetails } from '../search-results-item-details/SearchResultsItemDetails';
+import { store } from '../../../store/store';
+import { Provider } from 'react-redux';
 
 global.fetch = jest.fn(() =>
   Promise.resolve({
@@ -32,7 +34,9 @@ describe('SearchResultsItem Component', () => {
   it('renders the relevant card data', () => {
     render(
       <MemoryRouter>
-        <SearchResultsItem item={mockItem} />
+        <Provider store={store}>
+          <SearchResultsItem item={mockItem} />
+        </Provider>
       </MemoryRouter>
     );
 
@@ -45,10 +49,12 @@ describe('SearchResultsItem Component', () => {
     const DetailDisplay: React.FC = () => <div>Displaying details</div>;
     render(
       <MemoryRouter initialEntries={['/']}>
-        <Routes>
-          <Route path="/" element={<SearchResultsItem item={mockItem} />} />
-          <Route path="/details/:id" element={<DetailDisplay />} />
-        </Routes>
+        <Provider store={store}>
+          <Routes>
+            <Route path="/" element={<SearchResultsItem item={mockItem} />} />
+            <Route path="/details/:id" element={<DetailDisplay />} />
+          </Routes>
+        </Provider>
       </MemoryRouter>
     );
 
@@ -63,14 +69,16 @@ describe('SearchResultsItem Component', () => {
     const DetailDisplay: React.FC = () => <div>Displaying details</div>;
     render(
       <MemoryRouter initialEntries={['/details/1']}>
-        <Routes>
-          <Route
-            path="/details"
-            element={<SearchResultsItem item={mockItem} />}
-          >
-            <Route path="/details/:id" element={<DetailDisplay />} />
-          </Route>
-        </Routes>
+        <Provider store={store}>
+          <Routes>
+            <Route
+              path="/details"
+              element={<SearchResultsItem item={mockItem} />}
+            >
+              <Route path="/details/:id" element={<DetailDisplay />} />
+            </Route>
+          </Routes>
+        </Provider>
       </MemoryRouter>
     );
 
@@ -84,10 +92,12 @@ describe('SearchResultsItem Component', () => {
     const user = userEvent.setup();
     render(
       <MemoryRouter initialEntries={['/']}>
-        <Routes>
-          <Route path="/" element={<SearchResultsItem item={mockItem} />} />
-          <Route path="/details/:id" element={<SearchResultsItemDetails />} />
-        </Routes>
+        <Provider store={store}>
+          <Routes>
+            <Route path="/" element={<SearchResultsItem item={mockItem} />} />
+            <Route path="/details/:id" element={<SearchResultsItemDetails />} />
+          </Routes>
+        </Provider>
       </MemoryRouter>
     );
 
@@ -100,12 +110,14 @@ describe('SearchResultsItem Component', () => {
   it('card should have active style if id of details is same', () => {
     render(
       <MemoryRouter initialEntries={['/details/1']}>
-        <Routes>
-          <Route
-            path="/details/:id"
-            element={<SearchResultsItem item={mockItem} />}
-          />
-        </Routes>
+        <Provider store={store}>
+          <Routes>
+            <Route
+              path="/details/:id"
+              element={<SearchResultsItem item={mockItem} />}
+            />
+          </Routes>
+        </Provider>
       </MemoryRouter>
     );
     const link = screen.getByTestId('search-results-item');

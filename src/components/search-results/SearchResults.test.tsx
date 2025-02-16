@@ -2,6 +2,8 @@ import { render, screen } from '@testing-library/react';
 import { GithubRepoItemDto } from '../../models/github-repo-item-dto.model';
 import { MemoryRouter } from 'react-router';
 import { SearchResults } from './SearchResults';
+import { store } from '../../store/store';
+import { Provider } from 'react-redux';
 
 describe('SearchResults Component', () => {
   it('should display the spinner when loading', () => {
@@ -60,12 +62,14 @@ describe('SearchResults Component', () => {
     ] as unknown as GithubRepoItemDto[];
     render(
       <MemoryRouter>
-        <SearchResults
-          results={mockResults}
-          isLoading={false}
-          error=""
-          isCustomSearch={false}
-        />
+        <Provider store={store}>
+          <SearchResults
+            results={mockResults}
+            isLoading={false}
+            error=""
+            isCustomSearch={false}
+          />
+        </Provider>
       </MemoryRouter>
     );
 

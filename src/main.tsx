@@ -4,6 +4,8 @@ import App from './App';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { ErrorBoundary } from './components/error-boundary/ErrorBoundary';
+import { store } from './store/store';
+import { Provider } from 'react-redux';
 
 const rootElement = document.getElementById('root');
 if (rootElement) {
@@ -17,7 +19,9 @@ if (rootElement) {
         basename="/rsrschool-react/"
       >
         <ErrorBoundary>
-          <App />
+          <Provider store={store}>
+            <App />
+          </Provider>
         </ErrorBoundary>
       </BrowserRouter>
     </React.StrictMode>

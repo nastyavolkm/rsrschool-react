@@ -2,6 +2,8 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Route, Routes } from 'react-router';
 import { Main } from './Main';
+import { store } from '../../store/store';
+import { Provider } from 'react-redux';
 
 const mockData = {
   items: [
@@ -21,9 +23,11 @@ describe('Main Component', () => {
 
     render(
       <MemoryRouter initialEntries={['/']}>
-        <Routes>
-          <Route path="/" element={<Main />}></Route>
-        </Routes>
+        <Provider store={store}>
+          <Routes>
+            <Route path="/" element={<Main />}></Route>
+          </Routes>
+        </Provider>
       </MemoryRouter>
     );
     expect(screen.getByText(/Loading.../i)).toBeInTheDocument();

@@ -21,8 +21,8 @@ export const SearchResultsItemDetails: React.FC = () => {
       )}
       {isLoading && <Spinner />}
       {error && <p style={{ color: '#ff6464' }}>Error: {error}</p>}
-      {!isLoading && !item && <p>Item not found</p>}
-      {!isLoading && item && (
+      {!error && !isLoading && !item && <p>Item not found</p>}
+      {!error && !isLoading && item && (
         <div className="search-item-details-card">
           <h3 className="search-item-details-name search-item-card">
             {item.name}
