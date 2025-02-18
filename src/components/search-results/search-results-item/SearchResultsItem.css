@@ -16,6 +16,20 @@
     border-color: #747bff;
   }
 
+  &.dark {
+    .search-item-label {
+        border-color: #282828;
+        color: #FFFFFF;
+
+      &:hover {
+        background-color: #404040;
+      }
+    }
+    .search-item-checkbox input:checked + .search-item-label::after {
+        border-color: #FFFFFF;
+    }
+  }
+
   .search-item-name {
     overflow: hidden;
     text-overflow: ellipsis;

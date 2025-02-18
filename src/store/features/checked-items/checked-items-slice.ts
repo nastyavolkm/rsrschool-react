@@ -20,9 +20,12 @@ export const checkedItemsSlice = createSlice({
     removeItems: (state, action: PayloadAction<number>) => {
       state.items = state.items.filter((item) => item.id !== action.payload);
     },
+    resetItems: (state) => {
+      state.items = [];
+    },
   },
 });
 
-export const { addItems, removeItems } = checkedItemsSlice.actions;
+export const { addItems, removeItems, resetItems } = checkedItemsSlice.actions;
 
 export default checkedItemsSlice.reducer;

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './Search.css';
+import { ThemeContext } from '../../context/ThemeContext';
 
 type SearchProps = {
   onSearch: (searchTerm: string) => void;
@@ -12,6 +13,7 @@ export const Search: React.FC<SearchProps> = ({
   initialSearchTerm = '',
   isLoading,
 }) => {
+  const { theme } = useContext(ThemeContext);
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
 
   useEffect(() => {
@@ -28,7 +30,7 @@ export const Search: React.FC<SearchProps> = ({
   };
 
   return (
-    <div className="search">
+    <div className={theme === 'light' ? 'search' : 'search dark'}>
       <input
         disabled={isLoading}
         className="search-input"

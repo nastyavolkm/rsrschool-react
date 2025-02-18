@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ErrorBoundary } from './components/error-boundary/ErrorBoundary';
 import { store } from './store/store';
 import { Provider } from 'react-redux';
+import { ThemeProvider } from './context/ThemeProvider';
 
 const rootElement = document.getElementById('root');
 if (rootElement) {
@@ -20,7 +21,9 @@ if (rootElement) {
       >
         <ErrorBoundary>
           <Provider store={store}>
-            <App />
+            <ThemeProvider>
+              <App />
+            </ThemeProvider>
           </Provider>
         </ErrorBoundary>
       </BrowserRouter>

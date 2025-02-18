@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './Pagination.css';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ITEMS_PER_PAGE, MAX_PAGES_VISIBLE } from '../../constants/constants';
+import { ThemeContext } from '../../context/ThemeContext';
 
 type PaginationProps = {
   totalItems: number;
@@ -12,6 +13,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   totalItems,
   paginate,
 }) => {
+  const { theme } = useContext(ThemeContext);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const pageFromParams = searchParams.get('page');
@@ -65,7 +67,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             <button
               onClick={prevWindow}
               disabled={pageWindowStart === 0}
-              className="page-link"
+              className={`page-link ${theme}`}
             >
               Prev
             </button>
@@ -77,9 +79,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             <li key={number} className="page-item">
               <button
                 onClick={() => handlePageChange(Number(number))}
-                className={
-                  number === currentPage ? 'page-link active' : 'page-link'
-                }
+                className={`page-link ${theme} ${number === currentPage ? 'active' : ''}`}
               >
                 {number}
               </button>
@@ -92,7 +92,7 @@ export const Pagination: React.FC<PaginationProps> = ({
                 pageWindowStart + MAX_PAGES_VISIBLE >= pageNumbers.length
               }
               onClick={nextWindow}
-              className="page-link"
+              className={`page-link ${theme}`}
             >
               Next
             </button>

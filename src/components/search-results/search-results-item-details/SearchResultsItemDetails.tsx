@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './SearchResultsItemDetails.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Spinner } from '../../spinner/Spinner';
 import { useSearchResultsItemDetails } from '../../../hooks/useSearchResultsItemDetails';
+import { ThemeContext } from '../../../context/ThemeContext';
 
 export const SearchResultsItemDetails: React.FC = () => {
+  const { theme } = useContext(ThemeContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [item, error, isLoading] = useSearchResultsItemDetails();
 
   return (
-    <div className="search-item-details">
+    <div className={`search-item-details ${theme}`}>
       {!isLoading && (
         <button
           onClick={() => navigate(`/${location.search}`)}

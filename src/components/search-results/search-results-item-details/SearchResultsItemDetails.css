@@ -10,6 +10,18 @@
   padding: 0 60px 20px 60px;
   color: #747bff;
 
+  &.dark {
+    color: #FFFFFF;
+
+    .search-item-details-link {
+        color:#FFFFFF;
+
+        &:hover {
+            color: #cbd1f2;
+        }
+    }
+  }
+
   .search-item-details-close {
     font-size: 0.9em;
     outline: none;

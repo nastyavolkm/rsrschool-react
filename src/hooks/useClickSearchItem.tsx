@@ -13,6 +13,8 @@ export const useClickSearchItem = (
       if (
         !eventTarget.className.includes('search-item-card') &&
         !eventTarget.className.includes('search-item-details') &&
+        !eventTarget.className.includes('search-item-input-checkbox') &&
+        !eventTarget.className.includes('search-item-label') &&
         childRef?.current?.contains(eventTarget)
       ) {
         navigate(`/${location.search}`);
