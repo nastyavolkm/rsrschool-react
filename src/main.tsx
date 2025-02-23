@@ -4,9 +4,9 @@ import App from './App';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { ErrorBoundary } from './components/error-boundary/ErrorBoundary';
-import { store } from './store/store';
 import { Provider } from 'react-redux';
 import { ThemeProvider } from './context/ThemeProvider';
+import { store } from './store/store';
 
 const rootElement = document.getElementById('root');
 if (rootElement) {

@@ -19,7 +19,6 @@ export const SearchResultsItem: React.FC<SearchResultsItemProps> = ({
   const checkboxId = `checkbox-${item.id}`;
 
   const [isChecked, handleCheckboxChange] = useCheckedItemState(item);
-
   return (
     <Link
       data-testid="search-results-item"

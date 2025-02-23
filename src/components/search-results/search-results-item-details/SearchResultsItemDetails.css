@@ -11,14 +11,14 @@
   color: #747bff;
 
   &.dark {
-    color: #FFFFFF;
+    color: #ffffff;
 
     .search-item-details-link {
-        color:#FFFFFF;
+      color: #ffffff;
 
-        &:hover {
-            color: #cbd1f2;
-        }
+      &:hover {
+        color: #cbd1f2;
+      }
     }
   }
 

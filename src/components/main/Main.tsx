@@ -3,54 +3,37 @@ import './Main.css';
 import { Search } from '../search/Search';
 import { SearchResults } from '../search-results/SearchResults';
 import { useClickSearchItem } from '../../hooks/useClickSearchItem';
-import { useSearchData } from '../../hooks/useSearchData';
 import { Pagination } from '../pagination/Pagination';
 import { ErrorButton } from '../error-button/ErrorButton';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
 import { CheckedItemsData } from '../checked-items-data/CheckedItemsData';
 import { ThemeSwitcher } from '../theme-switcher/ThemeSwitcher';
 import { ThemeContext } from '../../context/ThemeContext';
+import { selectSearchItems } from '../../store/features/search/search-slice';
+import { selectCheckedItems } from '../../store/features/checked-items/checked-items-slice';
+import { selectIsLoading } from '../../store/features/loading/loading-slice';
 
 export const Main: React.FC = () => {
   const { theme } = useContext(ThemeContext);
   const childRef = useClickSearchItem(null);
-  const {
-    searchResults,
-    totalCount,
-    error,
-    isLoading,
-    searchTerm,
-    handleSearchTermChange,
-    updateCurrentPage,
-  } = useSearchData();
 
-  const checkedItems = useSelector(
-    (state: RootState) => state.checkedItems.items
-  );
+  const checkedItems = useSelector(selectCheckedItems);
+
+  const searchItems = useSelector(selectSearchItems);
+
+  const isLoading = useSelector(selectIsLoading);
 
   return (
     <div className={`main-wrapper ${theme}`}>
       <header className="header">
-        <Search
-          isLoading={isLoading}
-          onSearch={handleSearchTermChange}
-          initialSearchTerm={searchTerm}
-        />
+        <Search />
         <ThemeSwitcher />
       </header>
       <div className="main-results-wrapper" ref={childRef}>
-        <SearchResults
-          isCustomSearch={!searchTerm}
-          results={searchResults || []}
-          isLoading={isLoading}
-          error={error || ''}
-        />
+        <SearchResults />
       </div>
       <footer className="footer">
-        {searchResults?.length > 0 && (
-          <Pagination paginate={updateCurrentPage} totalItems={totalCount} />
-        )}
+        {searchItems?.length > 0 && <Pagination />}
         {!isLoading && <ErrorButton />}
         {checkedItems?.length > 0 && <CheckedItemsData />}
       </footer>

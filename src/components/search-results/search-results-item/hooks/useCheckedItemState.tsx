@@ -1,18 +1,16 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../../store/store';
 import React, { ChangeEvent } from 'react';
 import {
   addItems,
   removeItems,
+  selectCheckedItems,
 } from '../../../../store/features/checked-items/checked-items-slice';
 import { GithubRepoItemDto } from '../../../../models/github-repo-item-dto.model';
 
 export const useCheckedItemState = (
   item: GithubRepoItemDto
 ): [boolean, (event: ChangeEvent<HTMLInputElement>) => void] => {
-  const checkedItems = useSelector(
-    (state: RootState) => state.checkedItems.items
-  );
+  const checkedItems = useSelector(selectCheckedItems);
   const dispatch = useDispatch();
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLElement>) => {

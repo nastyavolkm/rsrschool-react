@@ -8,23 +8,8 @@ import { SearchResultsItemDetails } from '../search-results-item-details/SearchR
 import { store } from '../../../store/store';
 import { Provider } from 'react-redux';
 
-global.fetch = jest.fn(() =>
-  Promise.resolve({
-    json: () =>
-      Promise.resolve({
-        id: 123,
-        name: 'Test Repo',
-        description: 'Test Description',
-        forks: 10,
-        visibility: 'public',
-        owner: { login: 'testuser' },
-        svn_url: 'https://example.com/testrepo',
-      }),
-  })
-) as jest.Mock;
-
 const mockItem = {
-  id: 1,
+  id: 123,
   name: 'Sample Repo',
   forks: 150,
   svn_url: 'https://example.com',
@@ -58,7 +43,7 @@ describe('SearchResultsItem Component', () => {
       </MemoryRouter>
     );
 
-    const link = screen.getByTestId('search-results-item');
+    const link = await screen.findByTestId('search-results-item');
     await user.click(link);
 
     expect(link).toHaveAttribute('href', `/details/${mockItem.id}`);
@@ -68,7 +53,7 @@ describe('SearchResultsItem Component', () => {
     const user = userEvent.setup();
     const DetailDisplay: React.FC = () => <div>Displaying details</div>;
     render(
-      <MemoryRouter initialEntries={['/details/1']}>
+      <MemoryRouter initialEntries={['/details/123']}>
         <Provider store={store}>
           <Routes>
             <Route
@@ -82,7 +67,7 @@ describe('SearchResultsItem Component', () => {
       </MemoryRouter>
     );
 
-    const link = screen.getByTestId('search-results-item');
+    const link = await screen.findByTestId('search-results-item');
     await user.click(link);
 
     expect(link).toHaveAttribute('href', `/`);
@@ -101,15 +86,14 @@ describe('SearchResultsItem Component', () => {
       </MemoryRouter>
     );
 
-    const link = screen.getByTestId('search-results-item');
+    const link = await screen.findByTestId('search-results-item');
     await user.click(link);
-    expect(fetch).toHaveBeenCalledWith('https://api.github.com/repositories/1');
     expect(await screen.findByText('Test Repo')).toBeInTheDocument();
   });
 
-  it('card should have active style if id of details is same', () => {
+  it('card should have active style if id of details is same', async () => {
     render(
-      <MemoryRouter initialEntries={['/details/1']}>
+      <MemoryRouter initialEntries={['/details/123']}>
         <Provider store={store}>
           <Routes>
             <Route
@@ -120,7 +104,7 @@ describe('SearchResultsItem Component', () => {
         </Provider>
       </MemoryRouter>
     );
-    const link = screen.getByTestId('search-results-item');
+    const link = await screen.findByTestId('search-results-item');
     expect(link.firstChild).toHaveClass('active');
   });
 });

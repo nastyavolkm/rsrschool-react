@@ -15,8 +15,8 @@
     color: #100556;
 
     &.dark {
-        background: #181818;
-        color: #FFFFFF;
+      background: #181818;
+      color: #ffffff;
     }
 
     &:disabled {

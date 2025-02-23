@@ -1,6 +1,8 @@
-import { resetItems } from '../../../store/features/checked-items/checked-items-slice';
+import {
+  resetItems,
+  selectCheckedItems,
+} from '../../../store/features/checked-items/checked-items-slice';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../store/store';
 import { GithubRepoItemDto } from '../../../models/github-repo-item-dto.model';
 
 export const useCheckedItemsData = (): [
@@ -11,9 +13,7 @@ export const useCheckedItemsData = (): [
 ] => {
   const dispatch = useDispatch();
 
-  const checkedItems: GithubRepoItemDto[] = useSelector(
-    (state: RootState) => state.checkedItems.items
-  );
+  const checkedItems: GithubRepoItemDto[] = useSelector(selectCheckedItems);
 
   const unCheckItems = () => {
     dispatch(resetItems());

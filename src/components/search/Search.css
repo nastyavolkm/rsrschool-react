@@ -10,7 +10,7 @@
     .search-input {
       border-color: #282828;
       background: #404040;
-      color: #FFFFFF;
+      color: #ffffff;
 
       &:hover,
       &:focus {
@@ -20,12 +20,12 @@
 
     .search-button {
       border-color: #282828;
-      color: #FFFFFF;
+      color: #ffffff;
 
       &:hover,
       &:active {
         border-color: #404040;
-        color: #FFFFFF;
+        color: #ffffff;
       }
     }
   }

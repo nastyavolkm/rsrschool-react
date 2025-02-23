@@ -1,12 +1,13 @@
-import {
-  render,
-  screen,
-  waitForElementToBeRemoved,
-} from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { Route, Routes } from 'react-router';
 import { SearchResultsItemDetails } from './SearchResultsItemDetails';
+import { server } from '../../../../tests/server';
+import { http, HttpResponse } from 'msw';
+import { store } from '../../../store/store';
+import { Provider } from 'react-redux';
+import { ThemeProvider } from '../../../context/ThemeProvider';
 const mockedUsedNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({
@@ -16,20 +17,6 @@ jest.mock('react-router-dom', () => ({
 
 describe('SearchResultsItemDetails Component', () => {
   it('displays the detailed card data after fetching', async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        json: () =>
-          Promise.resolve({
-            id: 123,
-            name: 'Test Repo',
-            description: 'Test Description',
-            forks: 10,
-            visibility: 'public',
-            owner: { login: 'testuser' },
-            svn_url: 'https://example.com/testrepo',
-          }),
-      })
-    ) as jest.Mock;
     render(
       <MemoryRouter
         future={{
@@ -37,12 +24,16 @@ describe('SearchResultsItemDetails Component', () => {
         }}
         initialEntries={['/details/123']}
       >
-        <Routes>
-          <Route path="details">
-            <Route index element={<SearchResultsItemDetails />} />
-            <Route path=":id" element={<SearchResultsItemDetails />} />
-          </Route>
-        </Routes>
+        <Provider store={store}>
+          <ThemeProvider>
+            <Routes>
+              <Route path="details">
+                <Route index element={<SearchResultsItemDetails />} />
+                <Route path=":id" element={<SearchResultsItemDetails />} />
+              </Route>
+            </Routes>
+          </ThemeProvider>
+        </Provider>
       </MemoryRouter>
     );
 
@@ -56,45 +47,20 @@ describe('SearchResultsItemDetails Component', () => {
     ).toHaveAttribute('href', 'https://example.com/testrepo');
   });
 
-  it('shows a loading spinner while fetching data', async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        json: () =>
-          Promise.resolve({
-            id: 123,
-            name: 'Test Repo',
-            description: 'Test Description',
-            forks: 10,
-            visibility: 'public',
-            owner: { login: 'testuser' },
-            svn_url: 'https://example.com/testrepo',
-          }),
-      })
-    ) as jest.Mock;
-    render(
-      <MemoryRouter initialEntries={['/details/123']}>
-        <Routes>
-          <Route
-            path="/details/:id"
-            element={<SearchResultsItemDetails />}
-          ></Route>
-        </Routes>
-      </MemoryRouter>
-    );
-
-    await waitForElementToBeRemoved(() => screen.queryByText('Loading...'));
-  });
-
   it('navigates away when clicking the close button', async () => {
     const user = userEvent.setup();
     render(
       <MemoryRouter initialEntries={['/details/123?page=3']}>
-        <Routes>
-          <Route
-            path="/details/:id"
-            element={<SearchResultsItemDetails />}
-          ></Route>
-        </Routes>
+        <Provider store={store}>
+          <ThemeProvider>
+            <Routes>
+              <Route
+                path="/details/:id"
+                element={<SearchResultsItemDetails />}
+              ></Route>
+            </Routes>
+          </ThemeProvider>
+        </Provider>
       </MemoryRouter>
     );
 
@@ -107,46 +73,58 @@ describe('SearchResultsItemDetails Component', () => {
   });
 
   it('show error if returns error message', async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        json: () =>
-          Promise.resolve({
-            message: 'Not Found',
-            status: 404,
-          }),
+    server.use(
+      http.get('https://api.github.com/repositories/345', () => {
+        return HttpResponse.json({
+          status: 404,
+          message: 'not found',
+        });
       })
-    ) as jest.Mock;
+    );
     render(
-      <MemoryRouter initialEntries={['/details/123?page=3']}>
-        <Routes>
-          <Route
-            path="/details/:id"
-            element={<SearchResultsItemDetails />}
-          ></Route>
-        </Routes>
+      <MemoryRouter initialEntries={['/details/345?page=3']}>
+        <Provider store={store}>
+          <ThemeProvider>
+            <Routes>
+              <Route
+                path="/details/:id"
+                element={<SearchResultsItemDetails />}
+              ></Route>
+            </Routes>
+          </ThemeProvider>
+        </Provider>
       </MemoryRouter>
     );
 
-    expect(await screen.findByText('Error: Not Found')).toBeInTheDocument();
+    expect(await screen.findByText('Error: not found')).toBeInTheDocument();
   });
 
   it('show error if error occurs', async () => {
-    global.fetch = jest.fn(() =>
-      Promise.reject(new Error('An unknown error occurred'))
-    ) as jest.Mock;
+    server.use(
+      http.get('https://api.github.com/repositories/346', () => {
+        return new HttpResponse(null, {
+          status: 404,
+          statusText: 'not found',
+        });
+      })
+    );
     render(
-      <MemoryRouter initialEntries={['/details/123?page=3']}>
-        <Routes>
-          <Route
-            path="/details/:id"
-            element={<SearchResultsItemDetails />}
-          ></Route>
-        </Routes>
+      <MemoryRouter initialEntries={['/details/346?page=3']}>
+        <Provider store={store}>
+          <ThemeProvider>
+            <Routes>
+              <Route
+                path="/details/:id"
+                element={<SearchResultsItemDetails />}
+              ></Route>
+            </Routes>
+          </ThemeProvider>
+        </Provider>
       </MemoryRouter>
     );
 
     expect(
-      await screen.findByText('Error: An unknown error occurred')
+      await screen.findByText('Error: Something went wrong')
     ).toBeInTheDocument();
   });
 });

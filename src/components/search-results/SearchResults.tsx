@@ -1,27 +1,16 @@
 import React from 'react';
 import './SearchResults.css';
-import { GithubRepoItemDto } from '../../models/github-repo-item-dto.model';
 import { Outlet } from 'react-router';
 import { Spinner } from '../spinner/Spinner';
 import { SearchResultsItem } from './search-results-item/SearchResultsItem';
+import { useSearchData } from '../../hooks/useSearchData';
 
-interface SearchResultsProps {
-  results: GithubRepoItemDto[];
-  isLoading: boolean;
-  error: string;
-  isCustomSearch: boolean;
-}
-
-export const SearchResults: React.FC<SearchResultsProps> = ({
-  results,
-  isLoading,
-  error,
-  isCustomSearch,
-}) => {
+export const SearchResults: React.FC = () => {
+  const [items, error, isLoading, searchTerm] = useSearchData();
   return (
     <div className="search-results-wrapper">
       <div className="search-results">
-        {isCustomSearch && (
+        {!searchTerm && !isLoading && !error && items?.length > 0 && (
           <div className="search-results-hint">
             <h3>Here you can see all possible react.js related repositories</h3>
             <span>
@@ -32,17 +21,22 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
         )}
         <div className="search-results-items">
           {isLoading && <Spinner />}
-          {error && <p style={{ color: '#ff6464' }}>Error: {error}</p>}
-          {results?.length > 0 ? (
-            results.map((result, index) => (
-              <SearchResultsItem key={index} item={result} />
-            ))
-          ) : (
-            <div className="search-results-no-results">
-              <p>Oops! Seems like we found nothing.</p>
-              <span>Try to change your request.</span>
-            </div>
+          {(error as Error) && (
+            <p style={{ color: '#ff6464' }}>
+              {`Error: ${error instanceof Error ? error.message : 'Something went wrong'}`}
+            </p>
           )}
+          {!error &&
+            (items?.length > 0 ? (
+              items.map((result, index) => (
+                <SearchResultsItem key={index} item={result} />
+              ))
+            ) : (
+              <div className="search-results-no-results">
+                <p>Oops! Seems like we found nothing.</p>
+                <span>Try to change your request.</span>
+              </div>
+            ))}
         </div>
       </div>
       <Outlet />

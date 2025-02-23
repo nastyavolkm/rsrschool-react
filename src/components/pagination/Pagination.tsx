@@ -3,22 +3,21 @@ import './Pagination.css';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ITEMS_PER_PAGE, MAX_PAGES_VISIBLE } from '../../constants/constants';
 import { ThemeContext } from '../../context/ThemeContext';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectTotalCount,
+  setPage,
+} from '../../store/features/search/search-slice';
 
-type PaginationProps = {
-  totalItems: number;
-  paginate: (pageNumber: number) => void;
-};
-
-export const Pagination: React.FC<PaginationProps> = ({
-  totalItems,
-  paginate,
-}) => {
+export const Pagination: React.FC = () => {
+  const dispatch = useDispatch();
   const { theme } = useContext(ThemeContext);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const pageFromParams = searchParams.get('page');
   const [currentPage, setCurrentPage] = useState(pageFromParams || '1');
   const [pageWindowStart, setPageWindowStart] = useState(0);
+  const totalItems = useSelector(selectTotalCount);
 
   useEffect(() => {
     if (!pageFromParams) {
@@ -34,7 +33,7 @@ export const Pagination: React.FC<PaginationProps> = ({
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber.toString());
-    paginate(pageNumber);
+    dispatch(setPage(pageNumber.toString()));
     navigate(`?page=${pageNumber}`);
 
     if (pageNumber > pageWindowStart + MAX_PAGES_VISIBLE - 1) {

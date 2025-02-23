@@ -8,7 +8,7 @@ const config: Config = {
   setupFilesAfterEnv: ['<rootDir>/tests/setupTests.ts'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   modulePaths: ['<rootDir>'],
-  testEnvironment: 'jsdom',
+  testEnvironment: 'jest-fixed-jsdom',
   transform: {
     '^.+\\.(ts|tsx)$': [
       'ts-jest',
@@ -27,6 +27,9 @@ const config: Config = {
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['json', 'lcov', 'text', 'clover'],
+  testEnvironmentOptions: {
+    customExportConditions: [''],
+  },
 };
 
 export default config;

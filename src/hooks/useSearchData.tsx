@@ -1,65 +1,39 @@
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useGetGitHubRepoBySearchTermQuery } from '../api/services/GitHubSearchService';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectCurrentPage,
+  selectSearchTerm,
+  setSearchItems,
+  setTotalCount,
+} from '../store/features/search/search-slice';
+import { setLoading } from '../store/features/loading/loading-slice';
 import { GithubRepoItemDto } from '../models/github-repo-item-dto.model';
-import { GithubRepoResponseDto } from '../models/github-repo-response-dto.model';
-import { useSearchTerm } from './useSearchTerm';
-import { ITEMS_PER_PAGE } from '../constants/constants';
 
-export const useSearchData = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useSearchTerm();
-  const [searchResults, setSearchResults] = useState<GithubRepoItemDto[]>([]);
-  const [totalCount, setTotalCount] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(
-    new URLSearchParams(location.search).get('page') || '1'
-  );
-  const [error, setError] = useState<string | null>('');
+export const useSearchData: () => [
+  items: GithubRepoItemDto[],
+  error: unknown,
+  isLoading: boolean,
+  searchTerm: string,
+] = () => {
+  const dispatch = useDispatch();
+  const searchTerm: string = useSelector(selectSearchTerm);
+
+  const currentPage: string = useSelector(selectCurrentPage);
+
+  const { data, error, isFetching } = useGetGitHubRepoBySearchTermQuery({
+    searchTerm,
+    page: currentPage,
+  });
+
+  const items = data?.items as GithubRepoItemDto[];
+  const isLoading = isFetching;
 
   useEffect(() => {
-    const abortController = new AbortController();
-    (async () => {
-      setIsLoading(true);
-      setError(null);
+    dispatch(setLoading(isLoading));
+    dispatch(setSearchItems(items));
+    dispatch(setTotalCount(data?.total_count || 0));
+  }, [isLoading, isFetching, items, data?.total_count, dispatch]);
 
-      try {
-        const response = await fetch(
-          `https://api.github.com/search/repositories?q=${searchTerm || 'react'}&page=${currentPage || 1}&per_page=${ITEMS_PER_PAGE}`
-        );
-        const data: GithubRepoResponseDto = await response.json();
-        setSearchResults(data.items);
-        setTotalCount(data.total_count);
-        setIsLoading(false);
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError('An unknown error occurred');
-        }
-        setIsLoading(false);
-      }
-    })();
-    return () => abortController.abort();
-  }, [searchTerm, currentPage]);
-
-  const handleSearchTermChange = (newSearchTerm: string) => {
-    setSearchTerm(newSearchTerm);
-    setCurrentPage('1');
-    navigate(`?page=1`);
-  };
-
-  const updateCurrentPage = (pageNumber: number) => {
-    setCurrentPage(pageNumber.toString());
-  };
-
-  return {
-    searchResults,
-    totalCount,
-    error,
-    isLoading,
-    searchTerm,
-    handleSearchTermChange,
-    updateCurrentPage,
-  };
+  return [items, error, isLoading, searchTerm];
 };
