@@ -1,36 +1,66 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import Search from './Search';
+import { Search } from './Search';
+import { store } from '../../store/store';
+import { Provider } from 'react-redux';
+import { ThemeProvider } from '../../context/ThemeProvider';
+import { MemoryRouter } from 'react-router';
+
+const mockedUsedNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate,
+}));
 
 describe('Search Component', () => {
   it('clicking the search button set searchTerm to props', async () => {
     const user = userEvent.setup();
-    const handleSearch = jest.fn();
     render(
-      <Search isLoading={false} onSearch={handleSearch} initialSearchTerm="" />
+      <MemoryRouter initialEntries={['/']}>
+        <Provider store={store}>
+          <ThemeProvider>
+            <Search />
+          </ThemeProvider>
+        </Provider>
+      </MemoryRouter>
     );
 
-    const input = screen.getByRole('textbox');
-    const button = screen.getByRole('button', { name: 'Search' });
+    const input = await screen.findByRole('textbox');
+    const button = await screen.findByRole('button', { name: 'Search' });
     await user.type(input, 'react');
     await user.click(button);
 
-    expect(handleSearch).toHaveBeenCalledWith('react');
+    expect(mockedUsedNavigate).toHaveBeenCalledWith('?page=1');
   });
 
-  it('takes an input value from props', async () => {
+  it('takes an input value from store', async () => {
+    store.dispatch({ type: 'searchTerm/setSearchTerm', payload: 'react' });
     render(
-      <Search isLoading={false} onSearch={() => {}} initialSearchTerm="react" />
+      <MemoryRouter initialEntries={['/']}>
+        <Provider store={store}>
+          <ThemeProvider>
+            <Search />
+          </ThemeProvider>
+        </Provider>
+      </MemoryRouter>
     );
-    const input = screen.getByRole('textbox');
+    const input = await screen.findByRole('textbox');
     expect(input).toHaveValue('react');
   });
 
   it('input and button should be disabled if isLoading', async () => {
+    store.dispatch({ type: 'loading/setLoading', payload: true });
     render(
-      <Search isLoading={true} onSearch={() => {}} initialSearchTerm="react" />
+      <MemoryRouter initialEntries={['/']}>
+        <Provider store={store}>
+          <ThemeProvider>
+            <Search />
+          </ThemeProvider>
+        </Provider>
+      </MemoryRouter>
     );
-    expect(screen.getByRole('textbox')).toHaveAttribute('disabled');
-    expect(screen.getByRole('button')).toHaveAttribute('disabled');
+    expect(await screen.findByRole('textbox')).toHaveAttribute('disabled');
+    expect(await screen.findByRole('button')).toHaveAttribute('disabled');
   });
 });

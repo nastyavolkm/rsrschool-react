@@ -1,91 +1,121 @@
 import { render, screen } from '@testing-library/react';
-import SearchResults from './SearchResults';
-import { GithubRepoItemDto } from '../../models/github-repo-item-dto.model';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter, Route, Routes } from 'react-router';
+import { SearchResults } from './SearchResults';
+import { store } from '../../store/store';
+import { Provider } from 'react-redux';
+import { http, HttpResponse } from 'msw';
+import { ThemeProvider } from '../../context/ThemeProvider';
+import { server } from '../../../tests/server';
 
 describe('SearchResults Component', () => {
   it('should display the spinner when loading', () => {
     render(
-      <SearchResults
-        results={[]}
-        isLoading={true}
-        error=""
-        isCustomSearch={false}
-      />
+      <MemoryRouter initialEntries={['/']}>
+        <Provider store={store}>
+          <ThemeProvider>
+            <Routes>
+              <Route path="/" element={<SearchResults />}></Route>
+            </Routes>
+          </ThemeProvider>
+        </Provider>
+      </MemoryRouter>
     );
     expect(
       screen.getByRole('heading', { name: 'Loading...' })
     ).toBeInTheDocument();
   });
 
-  it('should display an error message when there is an error', () => {
-    const errorMessage = 'Network Error';
-    render(
-      <SearchResults
-        results={[]}
-        isLoading={false}
-        error={errorMessage}
-        isCustomSearch={false}
-      />
+  it('should display an error message when there is an error', async () => {
+    store.dispatch({ type: 'search/setSearchTerm', payload: 'react' });
+    store.dispatch({ type: 'search/setPage', payload: 2 });
+
+    server.use(
+      http.get('https://api.github.com/search/repositories', ({ request }) => {
+        const url = new URL(request.url);
+        url.searchParams.set('q', 'react');
+        url.searchParams.set('page', '2');
+
+        return new HttpResponse(null, {
+          status: 404,
+          statusText: 'not found',
+        });
+      })
     );
-    expect(screen.getByText(`Error: ${errorMessage}`)).toBeInTheDocument();
+    render(
+      <MemoryRouter initialEntries={['/?page=2']}>
+        <Provider store={store}>
+          <ThemeProvider>
+            <Routes>
+              <Route path="/" element={<SearchResults />}></Route>
+            </Routes>
+          </ThemeProvider>
+        </Provider>
+      </MemoryRouter>
+    );
+    expect(
+      await screen.findByText('Error: Something went wrong')
+    ).toBeInTheDocument();
   });
 
-  it('should display no results message when results array is empty', () => {
-    render(
-      <SearchResults
-        results={[]}
-        isLoading={false}
-        error=""
-        isCustomSearch={false}
-      />
+  it('should display no results message when results array is empty', async () => {
+    store.dispatch({ type: 'search/setSearchTerm', payload: 'bla' });
+    store.dispatch({ type: 'search/setPage', payload: 5 });
+
+    server.use(
+      http.get(
+        'https://api.github.com/search/repositories?q=bla&page=5',
+        ({ request }) => {
+          const url = new URL(request.url);
+          url.searchParams.set('q', 'bla');
+          url.searchParams.set('page', '5');
+          return HttpResponse.json({ items: [] });
+        }
+      )
     );
-    expect(screen.getByText(/we found nothing/i)).toBeInTheDocument();
+    render(
+      <MemoryRouter initialEntries={['/?page=5']}>
+        <Provider store={store}>
+          <ThemeProvider>
+            <Routes>
+              <Route path="/" element={<SearchResults />}></Route>
+            </Routes>
+          </ThemeProvider>
+        </Provider>
+      </MemoryRouter>
+    );
+    expect(await screen.findByText(/we found nothing/i)).toBeInTheDocument();
   });
 
-  it('should correctly render the list of results', () => {
-    const mockResults: GithubRepoItemDto[] = [
-      {
-        id: 1,
-        name: 'Repo 1',
-        description: 'A cool repo',
-        svn_url: 'http://example.com/1',
-      },
-      {
-        id: 2,
-        name: 'Repo 2',
-        description: 'Another cool repo',
-        svn_url: 'http://example.com/2',
-      },
-    ] as unknown as GithubRepoItemDto[];
+  it('should correctly render the list of results', async () => {
+    store.dispatch({ type: 'search/setSearchTerm', payload: 'angular' });
+    store.dispatch({ type: 'search/setPage', payload: '1' });
     render(
       <MemoryRouter>
-        <SearchResults
-          results={mockResults}
-          isLoading={false}
-          error=""
-          isCustomSearch={false}
-        />
+        <Provider store={store}>
+          <SearchResults />
+        </Provider>
       </MemoryRouter>
     );
 
-    const items = screen.getAllByRole('heading', { level: 3 });
+    const items = await screen.findAllByRole('heading', { level: 3 });
     expect(items.length).toBe(2);
-    expect(screen.getByText('Repo 1')).toBeInTheDocument();
-    expect(screen.getByText('Repo 2')).toBeInTheDocument();
   });
 
-  it('should display custom search hint when in custom search mode', () => {
+  it('should display custom search hint when there is no searchTerm', async () => {
+    store.dispatch({ type: 'search/setSearchTerm', payload: '' });
     render(
-      <SearchResults
-        results={[]}
-        isLoading={false}
-        error=""
-        isCustomSearch={true}
-      />
+      <MemoryRouter initialEntries={['/']}>
+        <Provider store={store}>
+          <ThemeProvider>
+            <Routes>
+              <Route path="/" element={<SearchResults />}></Route>
+            </Routes>
+          </ThemeProvider>
+        </Provider>
+      </MemoryRouter>
     );
     expect(
-      screen.getByText(
+      await screen.findByText(
         /here you can see all possible react.js related repositories/i
       )
     ).toBeInTheDocument();

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
-import ErrorButton from './ErrorButton';
-import ErrorBoundary from '../error-boundary/ErrorBoundary';
 import userEvent from '@testing-library/user-event';
+import { ErrorBoundary } from '../error-boundary/ErrorBoundary';
+import { ErrorButton } from './ErrorButton';
 
 describe('ErrorButton Component', () => {
   it('should throw error by click', async () => {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './ErrorButton.css';
 
-const ErrorButton: React.FC = () => {
+export const ErrorButton: React.FC = () => {
   const [hasError, setHasError] = useState(false);
 
   const triggerError = () => {
@@ -18,5 +18,3 @@ const ErrorButton: React.FC = () => {
     </button>
   );
 };
-
-export default ErrorButton;

@@ -1,28 +1,15 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route } from 'react-router-dom';
-import SearchResultsItem from './SearchResultsItem';
 import { GithubRepoItemDto } from '../../../models/github-repo-item-dto.model';
 import { Routes } from 'react-router';
-import SearchResultsItemDetails from '../search-results-item-details/SearchResultsItemDetails';
 import userEvent from '@testing-library/user-event';
-
-global.fetch = jest.fn(() =>
-  Promise.resolve({
-    json: () =>
-      Promise.resolve({
-        id: 123,
-        name: 'Test Repo',
-        description: 'Test Description',
-        forks: 10,
-        visibility: 'public',
-        owner: { login: 'testuser' },
-        svn_url: 'https://example.com/testrepo',
-      }),
-  })
-) as jest.Mock;
+import { SearchResultsItem } from './SearchResultsItem';
+import { SearchResultsItemDetails } from '../search-results-item-details/SearchResultsItemDetails';
+import { store } from '../../../store/store';
+import { Provider } from 'react-redux';
 
 const mockItem = {
-  id: 1,
+  id: 123,
   name: 'Sample Repo',
   forks: 150,
   svn_url: 'https://example.com',
@@ -32,7 +19,9 @@ describe('SearchResultsItem Component', () => {
   it('renders the relevant card data', () => {
     render(
       <MemoryRouter>
-        <SearchResultsItem item={mockItem} />
+        <Provider store={store}>
+          <SearchResultsItem item={mockItem} />
+        </Provider>
       </MemoryRouter>
     );
 
@@ -45,14 +34,16 @@ describe('SearchResultsItem Component', () => {
     const DetailDisplay: React.FC = () => <div>Displaying details</div>;
     render(
       <MemoryRouter initialEntries={['/']}>
-        <Routes>
-          <Route path="/" element={<SearchResultsItem item={mockItem} />} />
-          <Route path="/details/:id" element={<DetailDisplay />} />
-        </Routes>
+        <Provider store={store}>
+          <Routes>
+            <Route path="/" element={<SearchResultsItem item={mockItem} />} />
+            <Route path="/details/:id" element={<DetailDisplay />} />
+          </Routes>
+        </Provider>
       </MemoryRouter>
     );
 
-    const link = screen.getByTestId('search-results-item');
+    const link = await screen.findByTestId('search-results-item');
     await user.click(link);
 
     expect(link).toHaveAttribute('href', `/details/${mockItem.id}`);
@@ -62,19 +53,21 @@ describe('SearchResultsItem Component', () => {
     const user = userEvent.setup();
     const DetailDisplay: React.FC = () => <div>Displaying details</div>;
     render(
-      <MemoryRouter initialEntries={['/details/1']}>
-        <Routes>
-          <Route
-            path="/details"
-            element={<SearchResultsItem item={mockItem} />}
-          >
-            <Route path="/details/:id" element={<DetailDisplay />} />
-          </Route>
-        </Routes>
+      <MemoryRouter initialEntries={['/details/123']}>
+        <Provider store={store}>
+          <Routes>
+            <Route
+              path="/details"
+              element={<SearchResultsItem item={mockItem} />}
+            >
+              <Route path="/details/:id" element={<DetailDisplay />} />
+            </Route>
+          </Routes>
+        </Provider>
       </MemoryRouter>
     );
 
-    const link = screen.getByTestId('search-results-item');
+    const link = await screen.findByTestId('search-results-item');
     await user.click(link);
 
     expect(link).toHaveAttribute('href', `/`);
@@ -84,31 +77,34 @@ describe('SearchResultsItem Component', () => {
     const user = userEvent.setup();
     render(
       <MemoryRouter initialEntries={['/']}>
-        <Routes>
-          <Route path="/" element={<SearchResultsItem item={mockItem} />} />
-          <Route path="/details/:id" element={<SearchResultsItemDetails />} />
-        </Routes>
+        <Provider store={store}>
+          <Routes>
+            <Route path="/" element={<SearchResultsItem item={mockItem} />} />
+            <Route path="/details/:id" element={<SearchResultsItemDetails />} />
+          </Routes>
+        </Provider>
       </MemoryRouter>
     );
 
-    const link = screen.getByTestId('search-results-item');
+    const link = await screen.findByTestId('search-results-item');
     await user.click(link);
-    expect(fetch).toHaveBeenCalledWith('https://api.github.com/repositories/1');
     expect(await screen.findByText('Test Repo')).toBeInTheDocument();
   });
 
-  it('card should have active style if id of details is same', () => {
+  it('card should have active style if id of details is same', async () => {
     render(
-      <MemoryRouter initialEntries={['/details/1']}>
-        <Routes>
-          <Route
-            path="/details/:id"
-            element={<SearchResultsItem item={mockItem} />}
-          />
-        </Routes>
+      <MemoryRouter initialEntries={['/details/123']}>
+        <Provider store={store}>
+          <Routes>
+            <Route
+              path="/details/:id"
+              element={<SearchResultsItem item={mockItem} />}
+            />
+          </Routes>
+        </Provider>
       </MemoryRouter>
     );
-    const link = screen.getByTestId('search-results-item');
+    const link = await screen.findByTestId('search-results-item');
     expect(link.firstChild).toHaveClass('active');
   });
 });

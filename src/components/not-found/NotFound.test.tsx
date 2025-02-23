@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import NotFound from './NotFound';
+import { NotFound } from './NotFound';
 
 describe('NotFound Component', () => {
   it('should have 404 heading', () => {

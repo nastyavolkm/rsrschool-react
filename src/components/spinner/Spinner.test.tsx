@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import Spinner from './Spinner';
+import { Spinner } from './Spinner';
 describe('Spinner Component', () => {
   it('should have 404 heading', () => {
     render(<Spinner />);

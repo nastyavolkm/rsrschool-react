@@ -1,9 +1,34 @@
 .search {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 36px;
   width: 100%;
+
+  &.dark {
+    .search-input {
+      border-color: #282828;
+      background: #404040;
+      color: #ffffff;
+
+      &:hover,
+      &:focus {
+        border-color: #404040;
+      }
+    }
+
+    .search-button {
+      border-color: #282828;
+      color: #ffffff;
+
+      &:hover,
+      &:active {
+        border-color: #404040;
+        color: #ffffff;
+      }
+    }
+  }
 
   .search-input {
     width: 100%;

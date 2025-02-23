@@ -1,7 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import Pagination from './Pagination';
+import { Pagination } from './Pagination';
+import { store } from '../../store/store';
+import { Provider } from 'react-redux';
 
 const mockedUsedNavigate = jest.fn();
 
@@ -12,15 +14,13 @@ jest.mock('react-router-dom', () => ({
 
 describe('Pagination Component', () => {
   it('changes url by click on a page', async () => {
+    store.dispatch({ type: 'search/setTotalCount', payload: 200 });
     const user = userEvent.setup();
-    const handlePageChange = jest.fn();
     render(
       <MemoryRouter initialEntries={['/?page=2']}>
-        <Pagination
-          itemsPerPage={5}
-          totalItems={70}
-          paginate={handlePageChange}
-        />
+        <Provider store={store}>
+          <Pagination />
+        </Provider>
       </MemoryRouter>
     );
 
@@ -31,7 +31,6 @@ describe('Pagination Component', () => {
     const thirdPageButton = screen.getByRole('button', { name: '3' });
     await user.click(thirdPageButton);
 
-    expect(handlePageChange).toHaveBeenCalledWith(3);
     expect(mockedUsedNavigate).toHaveBeenCalledWith('?page=3');
   });
 });

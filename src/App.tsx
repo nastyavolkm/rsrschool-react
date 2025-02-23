@@ -1,8 +1,8 @@
 import './App.css';
-import Main from './components/main/Main';
 import { Route, Routes } from 'react-router';
-import SearchResultsItemDetails from './components/search-results/search-results-item-details/SearchResultsItemDetails';
-import NotFound from './components/not-found/NotFound';
+import { Main } from './components/main/Main';
+import { NotFound } from './components/not-found/NotFound';
+import { SearchResultsItemDetails } from './components/search-results/search-results-item-details/SearchResultsItemDetails';
 
 const App = () => {
   return (
