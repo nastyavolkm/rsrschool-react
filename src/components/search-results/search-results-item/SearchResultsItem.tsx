@@ -1,29 +1,38 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './SearchResultsItem.css';
-import { Link, useLocation } from 'react-router-dom';
-import { useParams } from 'react-router';
 import { GithubRepoItemDto } from '../../../models/github-repo-item-dto.model';
 import { useCheckedItemState } from './hooks/useCheckedItemState';
 import { ThemeContext } from '../../../context/ThemeContext';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 type SearchResultsItemProps = {
   item: GithubRepoItemDto;
 };
 
-export const SearchResultsItem: React.FC<SearchResultsItemProps> = ({
-  item,
-}) => {
+export const SearchResultsItem = ({ item }: SearchResultsItemProps) => {
   const { theme } = useContext(ThemeContext);
-  const location = useLocation();
-  const { id } = useParams();
+  const router = useRouter();
+  const [id, setId] = useState(router.query.id);
+  const currentPage = router.query.page || '1';
   const checkboxId = `checkbox-${item.id}`;
 
+  const getHref = () => {
+    if (item.id.toString() === id) {
+      return `/?page=${currentPage}`;
+    }
+    return `/details/${item.id}?page=${currentPage}`;
+  };
+
   const [isChecked, handleCheckboxChange] = useCheckedItemState(item);
+  useEffect(() => {
+    setId(router.query.id);
+  }, [router.query.id]);
   return (
     <Link
       data-testid="search-results-item"
       className="search-item-card"
-      to={`${item.id.toString() === id ? `/${location.search}` : `details/${item.id}${location.search}`}`}
+      href={getHref()}
     >
       <div
         className={`search-item-card search-item ${theme} ${Number(id) === item.id ? 'active' : ''}`}

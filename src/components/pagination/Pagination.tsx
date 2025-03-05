@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import './Pagination.css';
-import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ITEMS_PER_PAGE, MAX_PAGES_VISIBLE } from '../../constants/constants';
 import { ThemeContext } from '../../context/ThemeContext';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,23 +7,32 @@ import {
   selectTotalCount,
   setPage,
 } from '../../store/features/search/search-slice';
+import { useRouter } from 'next/router';
 
 export const Pagination: React.FC = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const { theme } = useContext(ThemeContext);
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const pageFromParams = searchParams.get('page');
+  const pageFromParams = router.query.page;
   const [currentPage, setCurrentPage] = useState(pageFromParams || '1');
   const [pageWindowStart, setPageWindowStart] = useState(0);
   const totalItems = useSelector(selectTotalCount);
 
+  const updateRouter = useCallback(
+    (newPage: string) => {
+      router.push({
+        pathname: router.pathname,
+        query: { ...router.query, page: newPage },
+      });
+    },
+    [router]
+  );
   useEffect(() => {
     if (!pageFromParams) {
-      navigate(`?page=1`);
+      updateRouter('1');
     }
     setCurrentPage(pageFromParams || '1');
-  }, [currentPage, pageFromParams, navigate]);
+  }, [pageFromParams, updateRouter]);
 
   const pageNumbers = Array.from(
     { length: Math.ceil(totalItems / ITEMS_PER_PAGE) },
@@ -34,7 +42,7 @@ export const Pagination: React.FC = () => {
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber.toString());
     dispatch(setPage(pageNumber.toString()));
-    navigate(`?page=${pageNumber}`);
+    updateRouter(pageNumber.toString());
 
     if (pageNumber > pageWindowStart + MAX_PAGES_VISIBLE - 1) {
       setPageWindowStart(pageNumber - MAX_PAGES_VISIBLE + 1);

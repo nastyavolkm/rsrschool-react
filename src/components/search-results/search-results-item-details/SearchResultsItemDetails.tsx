@@ -1,34 +1,42 @@
 import React, { useContext, useEffect } from 'react';
 import './SearchResultsItemDetails.css';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { Spinner } from '../../spinner/Spinner';
 import { ThemeContext } from '../../../context/ThemeContext';
 import { useGetGitHubRepoDetailsByIdQuery } from '../../../api/services/GitHubSearchService';
-import { useParams } from 'react-router';
 import { GithubRepoItemDto } from '../../../models/github-repo-item-dto.model';
 import { setDetailedItem } from '../../../store/features/search/search-slice';
 import { useDispatch } from 'react-redux';
+import { useRouter } from 'next/router';
 
-export const SearchResultsItemDetails: React.FC = () => {
+type SearchResultsItemDetailsProps = {
+  id: string;
+};
+export const SearchResultsItemDetails: React.FC<
+  SearchResultsItemDetailsProps
+> = ({ id }: SearchResultsItemDetailsProps) => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const { theme } = useContext(ThemeContext);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { id } = useParams();
-  const { data, error, isFetching } = useGetGitHubRepoDetailsByIdQuery(
-    id || ''
-  );
+  const { data, error, isFetching } = useGetGitHubRepoDetailsByIdQuery(id, {
+    skip: !id,
+  });
   const item = { ...data } as GithubRepoItemDto | { message: string };
 
   useEffect(() => {
     dispatch(setDetailedItem(data as GithubRepoItemDto | { message: string }));
   }, [data, dispatch]);
 
+  const changeRoute = () => {
+    router.push({
+      pathname: '/',
+      query: { page: router.query.page },
+    });
+  };
   return (
     <div className={`search-item-details ${theme}`}>
       {!isFetching && (
         <button
-          onClick={() => navigate(`/${location.search}`)}
+          onClick={() => changeRoute()}
           className="search-item-details-close"
         >
           Close

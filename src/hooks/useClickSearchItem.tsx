@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 
 export const useClickSearchItem = (
   initialElement: HTMLDivElement | null = null
 ) => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const childRef = useRef(initialElement);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ export const useClickSearchItem = (
         !eventTarget.className.includes('search-item-label') &&
         childRef?.current?.contains(eventTarget)
       ) {
-        navigate(`/${location.search}`);
+        router.push(`/${router.query}`);
       }
     };
 
@@ -25,6 +25,6 @@ export const useClickSearchItem = (
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [navigate]);
+  }, [router]);
   return childRef;
 };

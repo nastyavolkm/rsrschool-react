@@ -20,11 +20,13 @@ export const useSearchData: () => [
   const searchTerm: string = useSelector(selectSearchTerm);
 
   const currentPage: string = useSelector(selectCurrentPage);
-
-  const { data, error, isFetching } = useGetGitHubRepoBySearchTermQuery({
-    searchTerm,
-    page: currentPage,
-  });
+  const { data, error, isFetching } = useGetGitHubRepoBySearchTermQuery(
+    {
+      searchTerm,
+      page: currentPage,
+    },
+    { skip: !searchTerm }
+  );
 
   const items = data?.items as GithubRepoItemDto[];
   const isLoading = isFetching;

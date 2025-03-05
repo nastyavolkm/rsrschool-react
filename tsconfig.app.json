@@ -13,7 +13,7 @@
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
 
     /* Linting */
     "strict": true,
@@ -21,7 +21,12 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": true,
+    "plugins": [{ "name": "next" }],
   },
-  "include": ["src", "tests/setupTests.ts"]
+  "include": ["src", "tests/setupTests.ts", "./dist/types/**/*.ts", "./next-env.d.ts"],
+  "exclude": ["./node_modules"]
 }

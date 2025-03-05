@@ -1,45 +1,55 @@
 import React from 'react';
 import './SearchResults.css';
-import { Outlet } from 'react-router';
 import { Spinner } from '../spinner/Spinner';
 import { SearchResultsItem } from './search-results-item/SearchResultsItem';
 import { useSearchData } from '../../hooks/useSearchData';
 
-export const SearchResults: React.FC = () => {
+export const SearchResults: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [items, error, isLoading, searchTerm] = useSearchData();
   return (
     <div className="search-results-wrapper">
       <div className="search-results">
-        {!searchTerm && !isLoading && !error && items?.length > 0 && (
-          <div className="search-results-hint">
-            <h3>Here you can see all possible react.js related repositories</h3>
-            <span>
-              To see other type into a search field and click &quot;Search&quot;
-              button
-            </span>
-          </div>
-        )}
+        {searchTerm === 'react' &&
+          !isLoading &&
+          !error &&
+          items?.length > 0 && (
+            <div className="search-results-hint">
+              <h3>
+                Here you can see all possible react.js related repositories as
+                default, because api does not support empty request.
+              </h3>
+              <span>
+                To see other type into a search field and click
+                &quot;Search&quot; button
+              </span>
+            </div>
+          )}
+        {isLoading && <Spinner />}
         <div className="search-results-items">
-          {isLoading && <Spinner />}
           {(error as Error) && (
             <p style={{ color: '#ff6464' }}>
               {`Error: ${error instanceof Error ? error.message : 'Something went wrong'}`}
             </p>
           )}
           {!error &&
-            (items?.length > 0 ? (
-              items.map((result, index) => (
-                <SearchResultsItem key={index} item={result} />
-              ))
-            ) : (
-              <div className="search-results-no-results">
-                <p>Oops! Seems like we found nothing.</p>
-                <span>Try to change your request.</span>
-              </div>
-            ))}
+            !isLoading &&
+            (items?.length > 0
+              ? items.map((result, index) => (
+                  <SearchResultsItem key={index} item={result} />
+                ))
+              : items?.length === 0 && (
+                  <div className="search-results-no-results">
+                    <p>Oops! Seems like we found nothing.</p>
+                    <span>Try to change your request.</span>
+                  </div>
+                ))}
         </div>
       </div>
-      <Outlet />
+      {children}
     </div>
   );
 };

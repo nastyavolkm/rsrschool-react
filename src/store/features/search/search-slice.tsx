@@ -2,7 +2,6 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { GithubRepoItemDto } from '../../../models/github-repo-item-dto.model';
 import { RootState } from '../../store';
-import { SEARCH_TERM } from '../../../constants/constants';
 
 type SearchItemsState = {
   searchTerm: string;
@@ -13,7 +12,7 @@ type SearchItemsState = {
 };
 
 const initialState: SearchItemsState = {
-  searchTerm: localStorage.getItem(SEARCH_TERM) || '',
+  searchTerm: '',
   currentPage: '1',
   searchItems: [],
   detailedItem: null,

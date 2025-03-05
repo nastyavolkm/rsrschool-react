@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { ReactNode, useContext } from 'react';
 import './Main.css';
 import { Search } from '../search/Search';
 import { SearchResults } from '../search-results/SearchResults';
@@ -13,7 +13,10 @@ import { selectSearchItems } from '../../store/features/search/search-slice';
 import { selectCheckedItems } from '../../store/features/checked-items/checked-items-slice';
 import { selectIsLoading } from '../../store/features/loading/loading-slice';
 
-export const Main: React.FC = () => {
+type MainProps = {
+  children: ReactNode;
+};
+export const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const { theme } = useContext(ThemeContext);
   const childRef = useClickSearchItem(null);
 
@@ -30,7 +33,7 @@ export const Main: React.FC = () => {
         <ThemeSwitcher />
       </header>
       <div className="main-results-wrapper" ref={childRef}>
-        <SearchResults />
+        <SearchResults>{children}</SearchResults>
       </div>
       <footer className="footer">
         {searchItems?.length > 0 && <Pagination />}
