@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import './SearchResultsItem.css';
 import { GithubRepoItemDto } from '../../../models/github-repo-item-dto.model';
 import { useCheckedItemState } from './hooks/useCheckedItemState';
 import { ThemeContext } from '../../../context/ThemeContext';

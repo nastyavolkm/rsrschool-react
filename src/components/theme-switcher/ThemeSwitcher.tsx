@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import './ThemeSwitcher.css';
 import { ThemeContext } from '../../context/ThemeContext';
 
 export const ThemeSwitcher: React.FC = () => {

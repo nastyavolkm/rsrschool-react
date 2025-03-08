@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import './Spinner.css';
 import { ThemeContext } from '../../context/ThemeContext';
 
 export const Spinner: React.FC = () => {

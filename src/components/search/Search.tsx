@@ -1,5 +1,4 @@
 import React from 'react';
-import './Search.css';
 import { useSearchTerm } from '../../hooks/useSearchTerm';
 
 export const Search: React.FC = () => {

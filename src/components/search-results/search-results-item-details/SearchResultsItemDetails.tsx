@@ -1,5 +1,4 @@
 import React, { useContext, useEffect } from 'react';
-import './SearchResultsItemDetails.css';
 import { Spinner } from '../../spinner/Spinner';
 import { ThemeContext } from '../../../context/ThemeContext';
 import { useGetGitHubRepoDetailsByIdQuery } from '../../../api/services/GitHubSearchService';

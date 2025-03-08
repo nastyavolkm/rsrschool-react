@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react';
-import './ErrorBoundary.css';
 
 interface ErrorBoundaryState {
   hasError?: boolean | null;
