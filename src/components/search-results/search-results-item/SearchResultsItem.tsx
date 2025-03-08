@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import './SearchResultsItem.css';
 import { GithubRepoItemDto } from '../../../models/github-repo-item-dto.model';
 import { useCheckedItemState } from './hooks/useCheckedItemState';
@@ -13,21 +13,19 @@ type SearchResultsItemProps = {
 export const SearchResultsItem = ({ item }: SearchResultsItemProps) => {
   const { theme } = useContext(ThemeContext);
   const router = useRouter();
-  const [id, setId] = useState(router.query.id);
   const currentPage = router.query.page || '1';
+  const id = router.query.id;
+  const searchTerm = router.query.q;
   const checkboxId = `checkbox-${item.id}`;
 
   const getHref = () => {
     if (item.id.toString() === id) {
-      return `/?page=${currentPage}`;
+      return `/?page=${currentPage}${searchTerm ? `&q=${searchTerm}` : ''}`;
     }
-    return `/details/${item.id}?page=${currentPage}`;
+    return `/details/${item.id}?page=${currentPage}${searchTerm ? `&q=${searchTerm}` : ''}`;
   };
 
   const [isChecked, handleCheckboxChange] = useCheckedItemState(item);
-  useEffect(() => {
-    setId(router.query.id);
-  }, [router.query.id]);
   return (
     <Link
       data-testid="search-results-item"

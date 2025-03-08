@@ -1,38 +1,39 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './Pagination.css';
 import { ITEMS_PER_PAGE, MAX_PAGES_VISIBLE } from '../../constants/constants';
 import { ThemeContext } from '../../context/ThemeContext';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  selectTotalCount,
-  setPage,
-} from '../../store/features/search/search-slice';
+import { useSelector } from 'react-redux';
+import { selectTotalCount } from '../../store/features/search/search-slice';
 import { useRouter } from 'next/router';
 
 export const Pagination: React.FC = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
   const { theme } = useContext(ThemeContext);
   const pageFromParams = router.query.page;
   const [currentPage, setCurrentPage] = useState(pageFromParams || '1');
   const [pageWindowStart, setPageWindowStart] = useState(0);
   const totalItems = useSelector(selectTotalCount);
 
-  const updateRouter = useCallback(
-    (newPage: string) => {
-      router.push({
-        pathname: router.pathname,
-        query: { ...router.query, page: newPage },
-      });
-    },
-    [router]
-  );
+  const updateRouter = (newPage: string) => {
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, page: newPage },
+    });
+  };
+
   useEffect(() => {
     if (!pageFromParams) {
-      updateRouter('1');
+      router.replace(
+        {
+          pathname: '/',
+          query: { ...router.query, page: '1' },
+        },
+        undefined,
+        { shallow: true }
+      );
     }
     setCurrentPage(pageFromParams || '1');
-  }, [pageFromParams, updateRouter]);
+  }, [pageFromParams, router]);
 
   const pageNumbers = Array.from(
     { length: Math.ceil(totalItems / ITEMS_PER_PAGE) },
@@ -41,7 +42,6 @@ export const Pagination: React.FC = () => {
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber.toString());
-    dispatch(setPage(pageNumber.toString()));
     updateRouter(pageNumber.toString());
 
     if (pageNumber > pageWindowStart + MAX_PAGES_VISIBLE - 1) {

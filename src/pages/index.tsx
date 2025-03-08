@@ -6,13 +6,14 @@ export default function App() {
 }
 
 export const getServerSideProps = wrapper.getServerSideProps(
-  (store) => async () => {
-    const searchTerm = store.getState().search.searchTerm || 'react';
-    const currentPage = store.getState().search.currentPage || '1';
+  (store) => async (context) => {
+    const { page, q } = context.query;
+    const term = (q as string) || 'react';
+    const currentPage = (page as string) || '1';
 
     store.dispatch(
       gitHubSearchApi.endpoints.getGitHubRepoBySearchTerm.initiate({
-        searchTerm,
+        searchTerm: term,
         page: currentPage,
       })
     );
@@ -20,6 +21,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     await Promise.all(
       store.dispatch(gitHubSearchApi.util.getRunningQueriesThunk())
     );
+
     return {
       props: {},
     };

@@ -18,9 +18,14 @@ describe('SearchResults Component', () => {
       push: jest.fn(),
       pathname: '/',
       isReady: true,
+      events: {
+        on: jest.fn(),
+        off: jest.fn(),
+      },
     };
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     store.dispatch({ type: 'search/setSearchTerm', payload: 'angular' });
+    store.dispatch({ type: 'loading/setLoading', payload: true });
 
     render(
       <Provider store={store}>
@@ -38,20 +43,23 @@ describe('SearchResults Component', () => {
 
   it('should display an error message when there is an error', async () => {
     const mockRouter = {
-      query: { page: '2' },
+      query: { page: '2', q: 'view' },
       push: jest.fn(),
       pathname: '/',
       isReady: true,
+      events: {
+        on: jest.fn(),
+        off: jest.fn(),
+      },
     };
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
 
-    store.dispatch({ type: 'search/setSearchTerm', payload: 'react' });
-    store.dispatch({ type: 'search/setPage', payload: 2 });
+    store.dispatch({ type: 'loading/setLoading', payload: false });
 
     server.use(
       http.get('https://api.github.com/search/repositories', ({ request }) => {
         const url = new URL(request.url);
-        url.searchParams.set('q', 'react');
+        url.searchParams.set('q', 'view');
         url.searchParams.set('page', '2');
 
         return new HttpResponse(null, {
@@ -76,15 +84,14 @@ describe('SearchResults Component', () => {
 
   it('should display no results message when results array is empty', async () => {
     const mockRouter = {
-      query: { page: '5' },
+      query: { page: '5', q: 'bla' },
       push: jest.fn(),
       pathname: '/',
       isReady: true,
     };
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
 
-    store.dispatch({ type: 'search/setSearchTerm', payload: 'bla' });
-    store.dispatch({ type: 'search/setPage', payload: 5 });
+    store.dispatch({ type: 'loading/setLoading', payload: false });
 
     server.use(
       http.get(
@@ -111,15 +118,15 @@ describe('SearchResults Component', () => {
 
   it('should correctly render the list of results', async () => {
     const mockRouter = {
-      query: { page: '1' },
+      query: { page: '1', q: 'angular' },
       push: jest.fn(),
       pathname: '/',
       isReady: true,
     };
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
 
-    store.dispatch({ type: 'search/setSearchTerm', payload: 'angular' });
-    store.dispatch({ type: 'search/setPage', payload: '1' });
+    store.dispatch({ type: 'loading/setLoading', payload: false });
+
     render(
       <Provider store={store}>
         <SearchResults>
@@ -142,6 +149,7 @@ describe('SearchResults Component', () => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
 
     store.dispatch({ type: 'search/setSearchTerm', payload: 'react' });
+    store.dispatch({ type: 'loading/setLoading', payload: false });
     render(
       <Provider store={store}>
         <ThemeProvider>

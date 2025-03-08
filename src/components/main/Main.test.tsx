@@ -15,9 +15,14 @@ describe('Main Component', () => {
       push: jest.fn(),
       pathname: '/',
       isReady: true,
+      events: {
+        on: jest.fn(),
+        off: jest.fn(),
+      },
     };
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     store.dispatch({ type: 'search/setSearchTerm', payload: 'angular' });
+    store.dispatch({ type: 'loading/setLoading', payload: true });
 
     render(
       <Provider store={store}>
@@ -38,6 +43,10 @@ describe('Main Component', () => {
       push: jest.fn(),
       pathname: '/',
       isReady: true,
+      events: {
+        on: jest.fn(),
+        off: jest.fn(),
+      },
     };
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
 

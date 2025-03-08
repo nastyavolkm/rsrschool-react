@@ -3,31 +3,30 @@ import './SearchResults.css';
 import { Spinner } from '../spinner/Spinner';
 import { SearchResultsItem } from './search-results-item/SearchResultsItem';
 import { useSearchData } from '../../hooks/useSearchData';
+import { useRouter } from 'next/router';
 
 export const SearchResults: React.FC<{ children: React.ReactNode }> = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  const [items, error, isLoading, searchTerm] = useSearchData();
+  const router = useRouter();
+  const [items, error, isLoading] = useSearchData();
+
   return (
     <div className="search-results-wrapper">
       <div className="search-results">
-        {searchTerm === 'react' &&
-          !isLoading &&
-          !error &&
-          items?.length > 0 && (
-            <div className="search-results-hint">
-              <h3>
-                Here you can see all possible react.js related repositories as
-                default, because api does not support empty request.
-              </h3>
-              <span>
-                To see other type into a search field and click
-                &quot;Search&quot; button
-              </span>
-            </div>
-          )}
+        {!router.query.q && !isLoading && !error && items?.length > 0 && (
+          <div className="search-results-hint">
+            <h3>
+              Here you can see all possible react.js related repositories.
+            </h3>
+            <span>
+              To see other type into a search field and click &quot;Search&quot;
+              button
+            </span>
+          </div>
+        )}
         {isLoading && <Spinner />}
         <div className="search-results-items">
           {(error as Error) && (

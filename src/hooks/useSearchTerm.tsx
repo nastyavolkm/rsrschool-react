@@ -1,10 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  selectSearchTerm,
-  setPage,
-  setSearchTerm,
-} from '../store/features/search/search-slice';
+import { useSelector } from 'react-redux';
 import { ThemeContext } from '../context/ThemeContext';
 import { selectIsLoading } from '../store/features/loading/loading-slice';
 import { SEARCH_TERM } from '../constants/constants';
@@ -17,31 +12,27 @@ export const useSearchTerm: () => [
   (event: React.ChangeEvent<HTMLInputElement>) => void,
   () => void,
 ] = () => {
-  const dispatch = useDispatch();
   const router = useRouter();
   const { theme } = useContext(ThemeContext);
 
   const isLoading: boolean = useSelector(selectIsLoading);
-  const searchTermFromStore: string = useSelector(selectSearchTerm);
-  const [term, setTerm] = useState(searchTermFromStore);
+  const [term, setTerm] = useState('');
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTerm(event.target.value);
   };
 
   useEffect(() => {
-    setTerm(searchTermFromStore);
-  }, [searchTermFromStore]);
+    setTerm((router.query.q as string) || '');
+  }, [router.query.q]);
 
   const handleSearch = () => {
     const trimmedTerm = term.trim();
+    localStorage.setItem(SEARCH_TERM, trimmedTerm);
     router.push({
       pathname: router.pathname,
-      query: { ...router.query, page: '1' },
+      query: { ...router.query, page: '1', q: trimmedTerm || 'react' },
     });
-    localStorage.setItem(SEARCH_TERM, trimmedTerm);
-    dispatch(setSearchTerm(trimmedTerm || 'react'));
-    dispatch(setPage('1'));
   };
 
   return [theme, term, isLoading, handleInputChange, handleSearch];

@@ -5,8 +5,9 @@ import { ThemeContext } from '../../../context/ThemeContext';
 import { useGetGitHubRepoDetailsByIdQuery } from '../../../api/services/GitHubSearchService';
 import { GithubRepoItemDto } from '../../../models/github-repo-item-dto.model';
 import { setDetailedItem } from '../../../store/features/search/search-slice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
+import { selectIsLoading } from '../../../store/features/loading/loading-slice';
 
 type SearchResultsItemDetailsProps = {
   id: string;
@@ -17,8 +18,10 @@ export const SearchResultsItemDetails: React.FC<
   const router = useRouter();
   const dispatch = useDispatch();
   const { theme } = useContext(ThemeContext);
-  const { data, error, isFetching } = useGetGitHubRepoDetailsByIdQuery(id, {
-    skip: !id,
+  const isLoading = useSelector(selectIsLoading);
+
+  const { data, error } = useGetGitHubRepoDetailsByIdQuery(id, {
+    skip: !id || router.isFallback,
   });
   const item = { ...data } as GithubRepoItemDto | { message: string };
 
@@ -29,12 +32,12 @@ export const SearchResultsItemDetails: React.FC<
   const changeRoute = () => {
     router.push({
       pathname: '/',
-      query: { page: router.query.page },
+      query: { page: router.query.page, q: router.query.q },
     });
   };
   return (
     <div className={`search-item-details ${theme}`}>
-      {!isFetching && (
+      {!isLoading && (
         <button
           onClick={() => changeRoute()}
           className="search-item-details-close"
@@ -42,14 +45,14 @@ export const SearchResultsItemDetails: React.FC<
           Close
         </button>
       )}
-      {isFetching && <Spinner />}
+      {isLoading && <Spinner />}
       {(error || (item as { message: string })?.message) && (
         <p style={{ color: '#ff6464' }}>
           {`Error: ${error instanceof Error ? error.message : (item as { message: string })?.message || 'Something went wrong'}`}
         </p>
       )}
-      {!error && !isFetching && !item && <p>Item not found</p>}
-      {!error && !isFetching && item && (
+      {!error && !isLoading && !item && <p>Item not found</p>}
+      {!error && !isLoading && item && (
         <div className="search-item-details-card">
           <h3 className="search-item-details-name search-item-card">
             {(item as GithubRepoItemDto).name}

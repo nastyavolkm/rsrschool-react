@@ -16,6 +16,10 @@ describe('CheckedItemsData Component', () => {
       push: jest.fn(),
       pathname: '/',
       isReady: true,
+      events: {
+        on: jest.fn(),
+        off: jest.fn(),
+      },
     };
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
 

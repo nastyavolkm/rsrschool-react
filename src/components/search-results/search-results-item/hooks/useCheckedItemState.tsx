@@ -10,7 +10,7 @@ import { GithubRepoItemDto } from '../../../../models/github-repo-item-dto.model
 export const useCheckedItemState = (
   item: GithubRepoItemDto
 ): [boolean, (event: ChangeEvent<HTMLInputElement>) => void] => {
-  const checkedItems = useSelector(selectCheckedItems);
+  const checkedItems: GithubRepoItemDto[] = useSelector(selectCheckedItems);
   const dispatch = useDispatch();
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLElement>) => {

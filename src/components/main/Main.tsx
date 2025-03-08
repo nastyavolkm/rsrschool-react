@@ -12,6 +12,7 @@ import { ThemeContext } from '../../context/ThemeContext';
 import { selectSearchItems } from '../../store/features/search/search-slice';
 import { selectCheckedItems } from '../../store/features/checked-items/checked-items-slice';
 import { selectIsLoading } from '../../store/features/loading/loading-slice';
+import { useRouterEventChange } from '../../hooks/useRouterEventChange';
 
 type MainProps = {
   children: ReactNode;
@@ -19,6 +20,7 @@ type MainProps = {
 export const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   const { theme } = useContext(ThemeContext);
   const childRef = useClickSearchItem(null);
+  useRouterEventChange();
 
   const checkedItems = useSelector(selectCheckedItems);
 
