@@ -1,5 +1,4 @@
 import React from 'react';
-import './SearchResults.css';
 import { Spinner } from '../spinner/Spinner';
 import { SearchResultsItem } from './search-results-item/SearchResultsItem';
 import { useSearchData } from '../../hooks/useSearchData';

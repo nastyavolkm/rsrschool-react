@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import './Pagination.css';
 import { ITEMS_PER_PAGE, MAX_PAGES_VISIBLE } from '../../constants/constants';
 import { ThemeContext } from '../../context/ThemeContext';
 import { useSelector } from 'react-redux';

@@ -1,5 +1,4 @@
 import React, { ReactNode, useContext } from 'react';
-import './Main.css';
 import { Search } from '../search/Search';
 import { SearchResults } from '../search-results/SearchResults';
 import { useClickSearchItem } from '../../hooks/useClickSearchItem';
