@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext } from 'react';
+import React, { useContext } from 'react';
 import { Search } from '../search/Search';
 import { SearchResults } from '../search-results/SearchResults';
 import { useClickSearchItem } from '../../hooks/useClickSearchItem';
@@ -14,9 +14,9 @@ import { selectIsLoading } from '../../store/features/loading/loading-slice';
 import { useRouterEventChange } from '../../hooks/useRouterEventChange';
 
 type MainProps = {
-  children: ReactNode;
+  id: string | null;
 };
-export const Main: React.FC<MainProps> = ({ children }: MainProps) => {
+export const Main: React.FC<MainProps> = ({ id }: MainProps) => {
   const { theme } = useContext(ThemeContext);
   const childRef = useClickSearchItem(null);
   useRouterEventChange();
@@ -34,7 +34,7 @@ export const Main: React.FC<MainProps> = ({ children }: MainProps) => {
         <ThemeSwitcher />
       </header>
       <div className="main-results-wrapper" ref={childRef}>
-        <SearchResults>{children}</SearchResults>
+        <SearchResults id={id}></SearchResults>
       </div>
       <footer className="footer">
         {searchItems?.length > 0 && <Pagination />}
