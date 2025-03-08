@@ -30,9 +30,7 @@ describe('SearchResults Component', () => {
     render(
       <Provider store={store}>
         <ThemeProvider>
-          <SearchResults>
-            <div></div>
-          </SearchResults>
+          <SearchResults id={null}></SearchResults>
         </ThemeProvider>
       </Provider>
     );
@@ -71,9 +69,7 @@ describe('SearchResults Component', () => {
     render(
       <Provider store={store}>
         <ThemeProvider>
-          <SearchResults>
-            <div></div>
-          </SearchResults>
+          <SearchResults id={null}></SearchResults>
         </ThemeProvider>
       </Provider>
     );
@@ -107,9 +103,7 @@ describe('SearchResults Component', () => {
     render(
       <Provider store={store}>
         <ThemeProvider>
-          <SearchResults>
-            <div></div>
-          </SearchResults>
+          <SearchResults id={null}></SearchResults>
         </ThemeProvider>
       </Provider>
     );
@@ -129,9 +123,7 @@ describe('SearchResults Component', () => {
 
     render(
       <Provider store={store}>
-        <SearchResults>
-          <div></div>
-        </SearchResults>
+        <SearchResults id={null}></SearchResults>
       </Provider>
     );
 
@@ -153,9 +145,7 @@ describe('SearchResults Component', () => {
     render(
       <Provider store={store}>
         <ThemeProvider>
-          <SearchResults>
-            <div></div>
-          </SearchResults>
+          <SearchResults id={null}></SearchResults>
         </ThemeProvider>
       </Provider>
     );

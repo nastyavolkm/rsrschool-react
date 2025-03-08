@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useGetGitHubRepoBySearchTermQuery } from '../api/services/GitHubSearchService';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -18,6 +18,7 @@ export const useSearchData: () => [
   const router = useRouter();
   const isLoading = useSelector(selectIsLoading);
   const page = (router.query.page as string) || '1';
+  const isInitialRender = useRef(true);
 
   const { data, error } = useGetGitHubRepoBySearchTermQuery(
     {
@@ -30,6 +31,10 @@ export const useSearchData: () => [
   const items = data?.items as GithubRepoItemDto[];
 
   useEffect(() => {
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      return;
+    }
     dispatch(setSearchItems(items));
     dispatch(setTotalCount(data?.total_count || 0));
   }, [isLoading, items, data?.total_count, dispatch]);

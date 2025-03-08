@@ -1,8 +1,12 @@
 import { wrapper } from '../store/wrapper';
 import { gitHubSearchApi } from '../api/services/GitHubSearchService';
+import { Main } from '../components/main/Main';
+import { useRouter } from 'next/router';
 
 export default function App() {
-  return <div></div>;
+  const router = useRouter();
+  const id = router.query.id as string;
+  return <Main id={id} />;
 }
 
 export const getServerSideProps = wrapper.getServerSideProps(

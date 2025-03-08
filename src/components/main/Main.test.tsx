@@ -27,9 +27,7 @@ describe('Main Component', () => {
     render(
       <Provider store={store}>
         <ThemeProvider>
-          <Main>
-            <div></div>
-          </Main>
+          <Main id={null}></Main>
         </ThemeProvider>
       </Provider>
     );
@@ -54,9 +52,7 @@ describe('Main Component', () => {
     render(
       <Provider store={store}>
         <ThemeProvider>
-          <Main>
-            <div></div>
-          </Main>
+          <Main id={null}></Main>
         </ThemeProvider>
       </Provider>
     );

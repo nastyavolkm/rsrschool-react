@@ -28,9 +28,7 @@ describe('CheckedItemsData Component', () => {
     render(
       <Provider store={store}>
         <ThemeProvider>
-          <Main>
-            <div></div>
-          </Main>
+          <Main id={null}></Main>
         </ThemeProvider>
       </Provider>
     );

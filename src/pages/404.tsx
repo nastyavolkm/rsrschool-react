@@ -1,5 +1,5 @@
 import { NotFound } from '../components/not-found/NotFound';
 
-export default function App() {
+export default function NoPage() {
   return <NotFound />;
 }

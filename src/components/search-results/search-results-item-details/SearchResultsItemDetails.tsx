@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { Spinner } from '../../spinner/Spinner';
 import { ThemeContext } from '../../../context/ThemeContext';
 import { useGetGitHubRepoDetailsByIdQuery } from '../../../api/services/GitHubSearchService';
@@ -18,6 +18,7 @@ export const SearchResultsItemDetails: React.FC<
   const dispatch = useDispatch();
   const { theme } = useContext(ThemeContext);
   const isLoading = useSelector(selectIsLoading);
+  const isInitialRender = useRef(true);
 
   const { data, error } = useGetGitHubRepoDetailsByIdQuery(id, {
     skip: !id || router.isFallback,
@@ -25,7 +26,15 @@ export const SearchResultsItemDetails: React.FC<
   const item = { ...data } as GithubRepoItemDto | { message: string };
 
   useEffect(() => {
-    dispatch(setDetailedItem(data as GithubRepoItemDto | { message: string }));
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      return;
+    }
+    if (data) {
+      dispatch(
+        setDetailedItem(data as GithubRepoItemDto | { message: string })
+      );
+    }
   }, [data, dispatch]);
 
   const changeRoute = () => {
@@ -71,7 +80,8 @@ export const SearchResultsItemDetails: React.FC<
           <a
             className="search-item-details-link search-item-card"
             href={(item as GithubRepoItemDto).svn_url}
-            target="_blanc"
+            target="_blank"
+            rel="noreferrer"
           >
             Link to repo
           </a>

@@ -3,12 +3,9 @@ import { Spinner } from '../spinner/Spinner';
 import { SearchResultsItem } from './search-results-item/SearchResultsItem';
 import { useSearchData } from '../../hooks/useSearchData';
 import { useRouter } from 'next/router';
+import { SearchResultsItemDetails } from './search-results-item-details/SearchResultsItemDetails';
 
-export const SearchResults: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const SearchResults = ({ id }: { id: string | null }) => {
   const router = useRouter();
   const [items, error, isLoading] = useSearchData();
 
@@ -47,7 +44,7 @@ export const SearchResults: React.FC<{ children: React.ReactNode }> = ({
                 ))}
         </div>
       </div>
-      {children}
+      {id && <SearchResultsItemDetails id={id} />}
     </div>
   );
 };
