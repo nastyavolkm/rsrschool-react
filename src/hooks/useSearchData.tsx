@@ -1,39 +1,44 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useGetGitHubRepoBySearchTermQuery } from '../api/services/GitHubSearchService';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  selectCurrentPage,
-  selectSearchTerm,
   setSearchItems,
   setTotalCount,
 } from '../store/features/search/search-slice';
-import { setLoading } from '../store/features/loading/loading-slice';
+import { selectIsLoading } from '../store/features/loading/loading-slice';
 import { GithubRepoItemDto } from '../models/github-repo-item-dto.model';
+import { useRouter } from 'next/router';
 
 export const useSearchData: () => [
   items: GithubRepoItemDto[],
   error: unknown,
   isLoading: boolean,
-  searchTerm: string,
+  totalCount: number,
 ] = () => {
   const dispatch = useDispatch();
-  const searchTerm: string = useSelector(selectSearchTerm);
+  const router = useRouter();
+  const isLoading = useSelector(selectIsLoading);
+  const page = (router.query.page as string) || '1';
+  const isInitialRender = useRef(true);
 
-  const currentPage: string = useSelector(selectCurrentPage);
-
-  const { data, error, isFetching } = useGetGitHubRepoBySearchTermQuery({
-    searchTerm,
-    page: currentPage,
-  });
+  const { data, error } = useGetGitHubRepoBySearchTermQuery(
+    {
+      searchTerm: (router.query.q as string) || 'react',
+      page,
+    },
+    { skip: router.isFallback }
+  );
 
   const items = data?.items as GithubRepoItemDto[];
-  const isLoading = isFetching;
 
   useEffect(() => {
-    dispatch(setLoading(isLoading));
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      return;
+    }
     dispatch(setSearchItems(items));
     dispatch(setTotalCount(data?.total_count || 0));
-  }, [isLoading, isFetching, items, data?.total_count, dispatch]);
+  }, [isLoading, items, data?.total_count, dispatch]);
 
-  return [items, error, isLoading, searchTerm];
+  return [items, error, isLoading, data?.total_count || 0];
 };

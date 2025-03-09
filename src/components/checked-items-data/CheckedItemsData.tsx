@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import './CheckedItemsData.css';
 import { useCheckedItemsData } from './hooks/useCheckedItemsData';
 import { ThemeContext } from '../../context/ThemeContext';
 

@@ -1,39 +1,36 @@
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter, Route } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
 import { store } from '../../store/store';
 import { Main } from '../main/Main';
 import { ThemeProvider } from '../../context/ThemeProvider';
-import { Routes } from 'react-router';
-
-const mockData = {
-  items: [
-    { id: 1, name: 'repo1', forks: 10 },
-    { id: 2, name: 'repo2', forks: 5 },
-  ],
-  total_count: 2,
-};
-
-global.fetch = jest.fn(() =>
-  Promise.resolve({
-    json: () => Promise.resolve(mockData),
-  })
-) as jest.Mock;
+import { useRouter } from 'next/router';
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}));
 
 describe('CheckedItemsData Component', () => {
   it('shows number of selected items', async () => {
+    const mockRouter = {
+      query: { page: '2' },
+      push: jest.fn(),
+      pathname: '/',
+      isReady: true,
+      events: {
+        on: jest.fn(),
+        off: jest.fn(),
+      },
+    };
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+
     const user = userEvent.setup();
+    store.dispatch({ type: 'search/setSearchTerm', payload: 'angular' });
     render(
-      <MemoryRouter initialEntries={['/']}>
-        <Provider store={store}>
-          <ThemeProvider>
-            <Routes>
-              <Route path="/" element={<Main />}></Route>
-            </Routes>
-          </ThemeProvider>
-        </Provider>
-      </MemoryRouter>
+      <Provider store={store}>
+        <ThemeProvider>
+          <Main id={null}></Main>
+        </ThemeProvider>
+      </Provider>
     );
     expect(await screen.findByText('repo1')).toBeInTheDocument();
     expect(await screen.findByText('repo2')).toBeInTheDocument();

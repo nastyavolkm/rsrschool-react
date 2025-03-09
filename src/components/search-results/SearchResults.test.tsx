@@ -1,24 +1,38 @@
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router';
 import { SearchResults } from './SearchResults';
 import { store } from '../../store/store';
 import { Provider } from 'react-redux';
 import { http, HttpResponse } from 'msw';
 import { ThemeProvider } from '../../context/ThemeProvider';
 import { server } from '../../../tests/server';
+import { useRouter } from 'next/router';
+
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}));
 
 describe('SearchResults Component', () => {
   it('should display the spinner when loading', () => {
+    const mockRouter = {
+      query: { page: '2' },
+      push: jest.fn(),
+      pathname: '/',
+      isReady: true,
+      events: {
+        on: jest.fn(),
+        off: jest.fn(),
+      },
+    };
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    store.dispatch({ type: 'search/setSearchTerm', payload: 'angular' });
+    store.dispatch({ type: 'loading/setLoading', payload: true });
+
     render(
-      <MemoryRouter initialEntries={['/']}>
-        <Provider store={store}>
-          <ThemeProvider>
-            <Routes>
-              <Route path="/" element={<SearchResults />}></Route>
-            </Routes>
-          </ThemeProvider>
-        </Provider>
-      </MemoryRouter>
+      <Provider store={store}>
+        <ThemeProvider>
+          <SearchResults id={null}></SearchResults>
+        </ThemeProvider>
+      </Provider>
     );
     expect(
       screen.getByRole('heading', { name: 'Loading...' })
@@ -26,13 +40,24 @@ describe('SearchResults Component', () => {
   });
 
   it('should display an error message when there is an error', async () => {
-    store.dispatch({ type: 'search/setSearchTerm', payload: 'react' });
-    store.dispatch({ type: 'search/setPage', payload: 2 });
+    const mockRouter = {
+      query: { page: '2', q: 'view' },
+      push: jest.fn(),
+      pathname: '/',
+      isReady: true,
+      events: {
+        on: jest.fn(),
+        off: jest.fn(),
+      },
+    };
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+
+    store.dispatch({ type: 'loading/setLoading', payload: false });
 
     server.use(
       http.get('https://api.github.com/search/repositories', ({ request }) => {
         const url = new URL(request.url);
-        url.searchParams.set('q', 'react');
+        url.searchParams.set('q', 'view');
         url.searchParams.set('page', '2');
 
         return new HttpResponse(null, {
@@ -42,15 +67,11 @@ describe('SearchResults Component', () => {
       })
     );
     render(
-      <MemoryRouter initialEntries={['/?page=2']}>
-        <Provider store={store}>
-          <ThemeProvider>
-            <Routes>
-              <Route path="/" element={<SearchResults />}></Route>
-            </Routes>
-          </ThemeProvider>
-        </Provider>
-      </MemoryRouter>
+      <Provider store={store}>
+        <ThemeProvider>
+          <SearchResults id={null}></SearchResults>
+        </ThemeProvider>
+      </Provider>
     );
     expect(
       await screen.findByText('Error: Something went wrong')
@@ -58,8 +79,15 @@ describe('SearchResults Component', () => {
   });
 
   it('should display no results message when results array is empty', async () => {
-    store.dispatch({ type: 'search/setSearchTerm', payload: 'bla' });
-    store.dispatch({ type: 'search/setPage', payload: 5 });
+    const mockRouter = {
+      query: { page: '5', q: 'bla' },
+      push: jest.fn(),
+      pathname: '/',
+      isReady: true,
+    };
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+
+    store.dispatch({ type: 'loading/setLoading', payload: false });
 
     server.use(
       http.get(
@@ -73,46 +101,53 @@ describe('SearchResults Component', () => {
       )
     );
     render(
-      <MemoryRouter initialEntries={['/?page=5']}>
-        <Provider store={store}>
-          <ThemeProvider>
-            <Routes>
-              <Route path="/" element={<SearchResults />}></Route>
-            </Routes>
-          </ThemeProvider>
-        </Provider>
-      </MemoryRouter>
+      <Provider store={store}>
+        <ThemeProvider>
+          <SearchResults id={null}></SearchResults>
+        </ThemeProvider>
+      </Provider>
     );
     expect(await screen.findByText(/we found nothing/i)).toBeInTheDocument();
   });
 
   it('should correctly render the list of results', async () => {
-    store.dispatch({ type: 'search/setSearchTerm', payload: 'angular' });
-    store.dispatch({ type: 'search/setPage', payload: '1' });
+    const mockRouter = {
+      query: { page: '1', q: 'angular' },
+      push: jest.fn(),
+      pathname: '/',
+      isReady: true,
+    };
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+
+    store.dispatch({ type: 'loading/setLoading', payload: false });
+
     render(
-      <MemoryRouter>
-        <Provider store={store}>
-          <SearchResults />
-        </Provider>
-      </MemoryRouter>
+      <Provider store={store}>
+        <SearchResults id={null}></SearchResults>
+      </Provider>
     );
 
     const items = await screen.findAllByRole('heading', { level: 3 });
     expect(items.length).toBe(2);
   });
 
-  it('should display custom search hint when there is no searchTerm', async () => {
-    store.dispatch({ type: 'search/setSearchTerm', payload: '' });
+  it('should display custom search hint when there is default searchTerm', async () => {
+    const mockRouter = {
+      query: { page: '2' },
+      push: jest.fn(),
+      pathname: '/',
+      isReady: true,
+    };
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+
+    store.dispatch({ type: 'search/setSearchTerm', payload: 'react' });
+    store.dispatch({ type: 'loading/setLoading', payload: false });
     render(
-      <MemoryRouter initialEntries={['/']}>
-        <Provider store={store}>
-          <ThemeProvider>
-            <Routes>
-              <Route path="/" element={<SearchResults />}></Route>
-            </Routes>
-          </ThemeProvider>
-        </Provider>
-      </MemoryRouter>
+      <Provider store={store}>
+        <ThemeProvider>
+          <SearchResults id={null}></SearchResults>
+        </ThemeProvider>
+      </Provider>
     );
     expect(
       await screen.findByText(

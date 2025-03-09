@@ -4,16 +4,25 @@ import loadingReducer from './features/loading/loading-slice';
 import checkedItemsReducer from './features/checked-items/checked-items-slice';
 import { gitHubSearchApi } from '../api/services/GitHubSearchService';
 
-export const store = configureStore({
-  reducer: {
-    [gitHubSearchApi.reducerPath]: gitHubSearchApi.reducer,
-    checkedItems: checkedItemsReducer,
-    search: searchReducer,
-    loading: loadingReducer,
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(gitHubSearchApi.middleware),
-});
+export const reducer = {
+  [gitHubSearchApi.reducerPath]: gitHubSearchApi.reducer,
+  checkedItems: checkedItemsReducer,
+  search: searchReducer,
+  loading: loadingReducer,
+};
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export const makeStore = () => {
+  return configureStore({
+    reducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().concat(gitHubSearchApi.middleware),
+  });
+};
+
+export const store = makeStore();
+
+export type AppStore = ReturnType<typeof makeStore>;
+export type RootState = {
+  [K in keyof typeof reducer]: ReturnType<(typeof reducer)[K]>;
+};
+export type AppDispatch = AppStore['dispatch'];

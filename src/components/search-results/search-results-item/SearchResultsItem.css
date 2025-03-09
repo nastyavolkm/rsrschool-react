@@ -35,6 +35,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 100%;
+    flex: 0 0 auto;
   }
 
   .search-item-label {
