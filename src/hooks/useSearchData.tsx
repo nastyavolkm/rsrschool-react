@@ -13,6 +13,7 @@ export const useSearchData: () => [
   items: GithubRepoItemDto[],
   error: unknown,
   isLoading: boolean,
+  totalCount: number,
 ] = () => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -39,5 +40,5 @@ export const useSearchData: () => [
     dispatch(setTotalCount(data?.total_count || 0));
   }, [isLoading, items, data?.total_count, dispatch]);
 
-  return [items, error, isLoading];
+  return [items, error, isLoading, data?.total_count || 0];
 };
