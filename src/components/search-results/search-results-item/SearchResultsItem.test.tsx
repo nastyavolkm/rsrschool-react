@@ -3,7 +3,7 @@ import { GithubRepoItemDto } from '../../../models/github-repo-item-dto.model';
 import { SearchResultsItem } from './SearchResultsItem';
 import { store } from '../../../store/store';
 import { Provider } from 'react-redux';
-import { useRouter } from 'next/router';
+import { useParams, usePathname, useSearchParams } from 'next/navigation';
 
 const mockItem = {
   id: 123,
@@ -12,8 +12,15 @@ const mockItem = {
   svn_url: 'https://example.com',
 } as GithubRepoItemDto;
 
-jest.mock('next/router', () => ({
-  useRouter: jest.fn(),
+jest.mock('next/navigation', () => ({
+  useSearchParams: jest.fn(),
+  useParams: jest.fn(),
+  useRouter: jest.fn(() => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+    prefetch: jest.fn(),
+  })),
+  usePathname: jest.fn(),
 }));
 
 describe('SearchResultsItem Component', () => {
@@ -22,13 +29,10 @@ describe('SearchResultsItem Component', () => {
   });
 
   it('renders the relevant card data', () => {
-    const mockRouter = {
-      query: { page: '2' },
-      push: jest.fn(),
-      pathname: '/',
-      isReady: true,
-    };
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    (useSearchParams as jest.Mock).mockReturnValue({
+      get: (key: string) =>
+        key === 'page' ? '2' : key === 'q' ? 'angular' : null,
+    });
 
     render(
       <Provider store={store}>
@@ -41,13 +45,10 @@ describe('SearchResultsItem Component', () => {
   });
 
   it('sets href to main url when card is active', async () => {
-    const mockRouter = {
-      query: { page: '2', id: '123' },
-      push: jest.fn(),
-      pathname: '/details/123',
-      isReady: true,
-    };
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    (useSearchParams as jest.Mock).mockReturnValue({
+      get: (key: string) =>
+        key === 'page' ? '2' : key === 'q' ? 'angular' : null,
+    });
 
     render(
       <Provider store={store}>
@@ -56,17 +57,14 @@ describe('SearchResultsItem Component', () => {
     );
 
     const link = await screen.getByTestId('search-results-item');
-    expect(link).toHaveAttribute('href', '/?page=2');
+    expect(link).toHaveAttribute('href', '/details/123?page=2&q=angular');
   });
 
   it('sets href to detailed card component when not active', async () => {
-    const mockRouter = {
-      query: { page: '2' },
-      push: jest.fn(),
-      pathname: '/',
-      isReady: true,
-    };
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    (useSearchParams as jest.Mock).mockReturnValue({
+      get: (key: string) =>
+        key === 'page' ? '2' : key === 'q' ? 'angular' : null,
+    });
 
     render(
       <Provider store={store}>
@@ -75,17 +73,19 @@ describe('SearchResultsItem Component', () => {
     );
 
     const link = await screen.getByTestId('search-results-item');
-    expect(link).toHaveAttribute('href', `/details/123?page=2`);
+    expect(link).toHaveAttribute('href', `/details/123?page=2&q=angular`);
   });
 
   it('card should have active style if id of details is same', async () => {
-    const mockRouter = {
-      query: { page: '2', id: '123' },
-      push: jest.fn(),
-      pathname: '/details/123',
-      isReady: true,
-    };
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    (useSearchParams as jest.Mock).mockReturnValue({
+      get: (key: string) =>
+        key === 'page' ? '2' : key === 'q' ? 'angular' : null,
+    });
+    (useParams as jest.Mock).mockReturnValue({
+      id: '123',
+    });
+
+    (usePathname as jest.Mock).mockReturnValue('/details/123?page=2&q=angular');
 
     render(
       <Provider store={store}>

@@ -1,38 +1,29 @@
+'use client';
 import React, { useContext, useEffect, useState } from 'react';
 import { ITEMS_PER_PAGE, MAX_PAGES_VISIBLE } from '../../constants/constants';
 import { ThemeContext } from '../../context/ThemeContext';
-import { useSelector } from 'react-redux';
-import { selectTotalCount } from '../../store/features/search/search-slice';
-import { useRouter } from 'next/router';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-export const Pagination: React.FC = () => {
+export const Pagination = ({ totalItems }: { totalItems: number }) => {
   const router = useRouter();
   const { theme } = useContext(ThemeContext);
-  const pageFromParams = router.query.page;
+  const searchParams = useSearchParams();
+  const pageFromParams = searchParams.get('page');
+  const pathName = usePathname();
   const [currentPage, setCurrentPage] = useState(pageFromParams || '1');
   const [pageWindowStart, setPageWindowStart] = useState(0);
-  const totalItems = useSelector(selectTotalCount);
 
   const updateRouter = (newPage: string) => {
-    router.push({
-      pathname: router.pathname,
-      query: { ...router.query, page: newPage },
-    });
+    const currentParams = new URLSearchParams(searchParams.toString());
+    currentParams.set('page', newPage.toString());
+
+    const newUrl = `${pathName}?${currentParams.toString()}`;
+    router.push(newUrl);
   };
 
   useEffect(() => {
-    if (!pageFromParams) {
-      router.replace(
-        {
-          pathname: '/',
-          query: { ...router.query, page: '1' },
-        },
-        undefined,
-        { shallow: true }
-      );
-    }
     setCurrentPage(pageFromParams || '1');
-  }, [pageFromParams, router]);
+  }, [pageFromParams]);
 
   const pageNumbers = Array.from(
     { length: Math.ceil(totalItems / ITEMS_PER_PAGE) },

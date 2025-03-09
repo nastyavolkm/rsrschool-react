@@ -1,9 +1,10 @@
+'use client';
 import React, { useContext } from 'react';
 import { GithubRepoItemDto } from '../../../models/github-repo-item-dto.model';
 import { useCheckedItemState } from './hooks/useCheckedItemState';
 import { ThemeContext } from '../../../context/ThemeContext';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { useParams, useSearchParams } from 'next/navigation';
 
 type SearchResultsItemProps = {
   item: GithubRepoItemDto;
@@ -11,10 +12,11 @@ type SearchResultsItemProps = {
 
 export const SearchResultsItem = ({ item }: SearchResultsItemProps) => {
   const { theme } = useContext(ThemeContext);
-  const router = useRouter();
-  const currentPage = router.query.page || '1';
-  const id = router.query.id;
-  const searchTerm = router.query.q;
+  const searchParams = useSearchParams();
+  const params = useParams();
+  const currentPage = searchParams.get('page') || '1';
+  const id = params?.id;
+  const searchTerm = searchParams.get('q');
   const checkboxId = `checkbox-${item.id}`;
 
   const getHref = () => {

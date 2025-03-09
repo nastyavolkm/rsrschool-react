@@ -1,32 +1,51 @@
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { SearchResultsItemDetails } from './SearchResultsItemDetails';
-import { server } from '../../../../tests/server';
-import { http, HttpResponse } from 'msw';
 import { store } from '../../../store/store';
 import { Provider } from 'react-redux';
 import { ThemeProvider } from '../../../context/ThemeProvider';
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 
-jest.mock('next/router', () => ({
-  useRouter: jest.fn(),
+jest.mock('next/navigation', () => ({
+  useSearchParams: jest.fn(),
+  useParams: jest.fn(),
+  useRouter: jest.fn(() => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+    prefetch: jest.fn(),
+  })),
+  usePathname: jest.fn(),
 }));
 
 describe('SearchResultsItemDetails Component', () => {
   it('displays the detailed card data after fetching', async () => {
-    const mockRouter = {
-      query: { page: '2' },
-      push: jest.fn(),
-      pathname: '/details/123',
-      isReady: true,
-    };
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    (useParams as jest.Mock).mockReturnValue({
+      id: '123',
+    });
+
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        json: () =>
+          Promise.resolve({
+            id: 123,
+            name: 'Test Repo',
+            description: 'Test Description',
+            forks: 10,
+            visibility: 'public',
+            owner: {
+              login: 'testuser',
+            },
+            svn_url: 'https://example.com/testrepo',
+          }),
+      })
+    ) as jest.Mock;
+
+    const component = await SearchResultsItemDetails({
+      id: '123',
+    });
 
     render(
       <Provider store={store}>
-        <ThemeProvider>
-          <SearchResultsItemDetails id="123" />
-        </ThemeProvider>
+        <ThemeProvider>{component}</ThemeProvider>
       </Provider>
     );
 
@@ -40,90 +59,51 @@ describe('SearchResultsItemDetails Component', () => {
     ).toHaveAttribute('href', 'https://example.com/testrepo');
   });
 
-  it('navigates away when clicking the close button', async () => {
-    const mockRouter = {
-      query: { page: '3' },
-      push: jest.fn(),
-      pathname: '/details/123',
-      isReady: true,
-    };
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
-
-    const user = userEvent.setup();
-    render(
-      <Provider store={store}>
-        <ThemeProvider>
-          <SearchResultsItemDetails id="123" />
-        </ThemeProvider>
-      </Provider>
-    );
-
-    expect(await screen.findByText('Test Repo')).toBeInTheDocument();
-
-    const closeButton = screen.getByRole('button', { name: 'Close' });
-    await user.click(closeButton);
-
-    expect(mockRouter.push).toHaveBeenCalledWith({
-      pathname: '/',
-      query: { page: '3' },
-    });
-  });
-
   it('show error if returns error message', async () => {
-    const mockRouter = {
-      query: { page: '3' },
-      push: jest.fn(),
-      pathname: '/details/345',
-      isReady: true,
-    };
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    (useParams as jest.Mock).mockReturnValue({
+      id: '123',
+    });
 
-    server.use(
-      http.get('https://api.github.com/repositories/345', () => {
-        return HttpResponse.json({
-          status: 404,
-          message: 'not found',
-        });
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        json: () =>
+          Promise.resolve({
+            message: 'error',
+          }),
       })
-    );
+    ) as jest.Mock;
+
+    const component = await SearchResultsItemDetails({
+      id: '123',
+    });
+
     render(
       <Provider store={store}>
-        <ThemeProvider>
-          <SearchResultsItemDetails id="345" />
-        </ThemeProvider>
+        <ThemeProvider>{component}</ThemeProvider>
       </Provider>
     );
-
-    expect(await screen.findByText('Error: not found')).toBeInTheDocument();
+    expect(await screen.findByText('Error: error')).toBeInTheDocument();
   });
 
   it('show error if error occurs', async () => {
-    const mockRouter = {
-      query: { page: '3' },
-      push: jest.fn(),
-      pathname: '/details/346',
-      isReady: true,
-    };
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    (useParams as jest.Mock).mockReturnValue({
+      id: '123',
+    });
 
-    server.use(
-      http.get('https://api.github.com/repositories/346', () => {
-        return new HttpResponse(null, {
-          status: 404,
-          statusText: 'not found',
-        });
-      })
-    );
+    global.fetch = jest.fn(() => Promise.reject('error')) as jest.Mock;
+
+    const component = await SearchResultsItemDetails({
+      id: '123',
+    });
+
     render(
       <Provider store={store}>
-        <ThemeProvider>
-          <SearchResultsItemDetails id="346" />
-        </ThemeProvider>
+        <ThemeProvider>{component}</ThemeProvider>
       </Provider>
     );
 
     expect(
-      await screen.findByText('Error: Something went wrong')
+      await screen.findByText('Error: Failed to fetch data')
     ).toBeInTheDocument();
   });
 });

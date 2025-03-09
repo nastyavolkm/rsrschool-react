@@ -37,6 +37,10 @@
   .main-results-wrapper {
     width: 100%;
   }
+
+  .main-data-wrapper {
+    display: flex;
+  }
 }
 
 .header {
@@ -52,6 +56,6 @@
   margin-top: auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   position: relative;
 }

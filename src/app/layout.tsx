@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import '../index.css';
 import '../components/checked-items-data/CheckedItemsData.css';
 import '../components/main/Main.css';
@@ -11,27 +12,20 @@ import '../components/theme-switcher/ThemeSwitcher.css';
 import '../components/spinner/Spinner.css';
 import '../components/not-found/NotFound.css';
 import '../components/error-boundary/ErrorBoundary.css';
-import { wrapper } from '../store/wrapper';
-import { AppProps } from 'next/app';
-import { Provider } from 'react-redux';
-import Head from 'next/head';
-import { ErrorBoundary } from '../components/error-boundary/ErrorBoundary';
-import { ThemeProvider } from '../context/ThemeProvider';
+import { ReactNode } from 'react';
+import Providers from '../components/providers/Providers';
 
-export default function MyApp({ Component, pageProps }: AppProps) {
-  const { store } = wrapper.useWrappedStore(pageProps);
+export const metadata: Metadata = {
+  title: 'GitHub Repositories',
+  description: 'A search app built with Next.js and Redux',
+};
 
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <ErrorBoundary>
-      <Provider store={store}>
-        <ThemeProvider>
-          <Head>
-            <link rel="icon" href="/favicon.png" />
-            <title>GitHub repositories</title>
-          </Head>
-          <Component {...pageProps} />
-        </ThemeProvider>
-      </Provider>
-    </ErrorBoundary>
+    <html lang="en">
+      <body>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
   );
 }

@@ -1,58 +1,84 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { Main } from './Main';
 import { store } from '../../store/store';
 import { Provider } from 'react-redux';
 import { ThemeProvider } from '../../context/ThemeProvider';
-import { useRouter } from 'next/router';
-jest.mock('next/router', () => ({
-  useRouter: jest.fn(),
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
+
+jest.mock('next/navigation', () => ({
+  useSearchParams: jest.fn(),
+  useRouter: jest.fn(() => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+    prefetch: jest.fn(),
+  })),
+  usePathname: jest.fn(),
 }));
 
-describe('Main Component', () => {
-  it('renders without crashing', async () => {
-    const mockRouter = {
-      query: { page: '2' },
-      push: jest.fn(),
-      pathname: '/',
-      isReady: true,
-      events: {
-        on: jest.fn(),
-        off: jest.fn(),
-      },
-    };
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
-    store.dispatch({ type: 'search/setSearchTerm', payload: 'angular' });
-    store.dispatch({ type: 'loading/setLoading', payload: true });
+const MockSearchResults = ({
+  searchTerm,
+  currentPage,
+}: {
+  searchTerm: string;
+  currentPage: string;
+}) => {
+  return (
+    <div>
+      <div>Search Results</div>
+      {currentPage}
+      {searchTerm}
+    </div>
+  );
+};
 
+describe('Main Component', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    store.dispatch({ type: 'checkedItems/clearItems' });
+    (useSearchParams as jest.Mock).mockReturnValue({
+      get: (key: string) =>
+        key === 'page' ? '2' : key === 'q' ? 'angular' : null,
+    });
+  });
+
+  it('renders without crashing', async () => {
     render(
       <Provider store={store}>
         <ThemeProvider>
-          <Main id={null}></Main>
+          <Main
+            results={
+              <Suspense fallback={<div>Loading...</div>}>
+                <MockSearchResults searchTerm="angular" currentPage="2" />
+              </Suspense>
+            }
+          />
         </ThemeProvider>
       </Provider>
     );
-    expect(screen.getByText(/Loading.../i)).toBeInTheDocument();
-    expect(screen.getByRole('checkbox')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText('Search Results')).toBeInTheDocument();
+      expect(screen.getByRole('checkbox')).toBeInTheDocument();
+    });
   });
 
   it('displays checkedItemsComponent', async () => {
-    const mockRouter = {
-      query: { page: '2' },
-      push: jest.fn(),
-      pathname: '/',
-      isReady: true,
-      events: {
-        on: jest.fn(),
-        off: jest.fn(),
-      },
-    };
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    store.dispatch({
+      type: 'checkedItems/addItems',
+      payload: { id: 1 },
+    });
 
-    store.dispatch({ type: 'checkedItems/addItems', payload: { id: 1 } });
     render(
       <Provider store={store}>
         <ThemeProvider>
-          <Main id={null}></Main>
+          <Main
+            results={
+              <Suspense fallback={<div>Loading...</div>}>
+                <MockSearchResults searchTerm="angular" currentPage="2" />
+              </Suspense>
+            }
+          />
         </ThemeProvider>
       </Provider>
     );

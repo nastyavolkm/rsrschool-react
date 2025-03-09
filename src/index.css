@@ -13,13 +13,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-#__next {
-  width: 100%;
-  margin: 0 auto;
-  color: #3b468a;
-  height: 100%;
-}
-
 a {
   font-weight: 500;
   color: #646cff;
@@ -39,6 +32,7 @@ body {
   max-height: 100vh;
   height: 100%;
   overflow: hidden;
+  color: #3b468a;
 }
 
 html {
@@ -77,5 +71,19 @@ ul {
   }
   button {
     background-color: #f9f9f9;
+  }
+}
+
+.dark {
+  .search-item-details {
+    color: #ffffff;
+
+    .search-item-details-link {
+      color: #ffffff;
+
+      &:hover {
+        color: #cbd1f2;
+      }
+    }
   }
 }
