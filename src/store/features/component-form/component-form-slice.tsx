@@ -1,19 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
+import { FormState } from '../../models/form.model.tsx';
 
-export interface ComponentFormState {
-  name: string;
-  age: number;
-  email: string;
-  password: string;
-  gender: 'female' | 'male' | null;
-  accept_terms: boolean;
-  image: string;
-  country: string;
-}
-
-const initialState: { form: ComponentFormState | null } = {
+const initialState: { form: FormState | null } = {
   form: null,
 };
 
@@ -21,16 +11,17 @@ export const componentFormSlice = createSlice({
   name: 'componentForm',
   initialState,
   reducers: {
-    addData: (
-      state: { form: ComponentFormState },
-      action: PayloadAction<ComponentFormState>
+    addComponentFormData: (
+      state: { form: FormState | null },
+      action: PayloadAction<FormState>
     ) => {
       state.form = { ...state.form, ...action.payload };
     },
   },
 });
 
-export const { addData } = componentFormSlice.actions;
-export const selectComponentForm = (state: RootState) => state.form;
+export const { addComponentFormData } = componentFormSlice.actions;
+export const selectComponentForm = (state: RootState) =>
+  state.componentForm.form;
 
 export default componentFormSlice.reducer;

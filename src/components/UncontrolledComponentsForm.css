@@ -1,0 +1,57 @@
+.component-form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 20px;
+    border: 2px solid #535bf2;
+    border-radius: 5px;
+    width: 40vw;
+
+    label {
+        text-align: left;
+
+        &:hover {
+            color: #1434A4;
+        }
+
+        input, select {
+            border: 1px solid #535bf2;
+            margin-left: 10px;
+            color: #191970;
+
+            &:hover, &:focus {
+                border: 1px solid #1434A4;
+            }
+        }
+    }
+
+    input[type='submit'] {
+        width: 100%;
+        background: #646cff;
+        border: 1px solid #535bf2;
+        cursor: pointer;
+        border-radius: 2px;
+        height: 36px;
+
+        &:hover {
+            background: #000088;
+            color: white;
+        }
+    }
+}
+
+.component-form-link {
+    width: 100%;
+    text-align: left;
+    align-self: flex-start;
+}
+
+.component-form-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
