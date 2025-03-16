@@ -22,6 +22,7 @@ export const ReactHooksForm: React.FC = () => {
     handleSubmit,
     control,
     formState: { errors, isValid },
+    trigger,
   } = useForm<ReactFormModel>({
     resolver: yupResolver(validationSchema),
     mode: 'onChange',
@@ -36,6 +37,7 @@ export const ReactHooksForm: React.FC = () => {
     const pass = event.target.value || '';
     const passwordStrength = getPasswordStrength(pass);
     setPasswordStrength(passwordStrength);
+    trigger('confirmedPassword');
   };
   const onSubmitHandler = (data: ReactFormModel) => {
     dispatch(addFormsData({ ...data, upload: base64 } as FormState));
