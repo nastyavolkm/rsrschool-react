@@ -78,123 +78,125 @@ export const UncontrolledComponentsForm: React.FC = () => {
       </Link>
       <h3>Uncontrolled Components Form</h3>
       <form className="component-form" onSubmit={handleSubmit}>
-        <label htmlFor="name">
-          Name:
-          <input
-            id="name"
-            type="text"
-            ref={name}
-            name="name"
-            placeholder="Enter a name"
-          />
-          <div className="error-wrapper">
-            {errors?.name && <ErrorMessage message={errors.name} />}
-          </div>
-        </label>
-        <label htmlFor="age">
-          Age:
-          <input
-            id="age"
-            type="number"
-            ref={age}
-            name="age"
-            placeholder="Enter an age"
-          />
-          <div className="error-wrapper">
-            {errors?.age && <ErrorMessage message={errors.age} />}
-          </div>
-        </label>
-        <label htmlFor="email">
-          Email:
-          <input
-            id="email"
-            type="string"
-            ref={email}
-            name="email"
-            placeholder="Enter an email"
-          />
-          <div className="error-wrapper">
-            {errors?.email && <ErrorMessage message={errors.email} />}
-          </div>
-        </label>
-        <label htmlFor="password">
-          Password:
-          <input
-            id="password"
-            type="password"
-            ref={password}
-            name="password"
-            placeholder="Enter a password"
-            onChange={handlePasswordStrength}
-          />
-          {passwordStrength && (
-            <span className="password-strength">{passwordStrength}</span>
-          )}
-          <div className="error-wrapper">
-            {errors?.password && <ErrorMessage message={errors.password} />}
-          </div>
-        </label>
-        <label htmlFor="password-check">
-          Confirm your password:
-          <input
-            id="password-check"
-            type="password"
-            ref={confirmedPassword}
-            name="confirmedPassword"
-            placeholder="Confirm your password"
-          />
-          <div className="error-wrapper">
-            {errors?.confirmedPassword && (
-              <ErrorMessage message={errors.confirmedPassword} />
+        <div className="form-content">
+          <label htmlFor="name">
+            Name:
+            <input
+              id="name"
+              type="text"
+              ref={name}
+              name="name"
+              placeholder="Enter a name"
+            />
+            <div className="error-wrapper">
+              {errors?.name && <ErrorMessage message={errors.name} />}
+            </div>
+          </label>
+          <label htmlFor="age">
+            Age:
+            <input
+              id="age"
+              type="number"
+              ref={age}
+              name="age"
+              placeholder="Enter an age"
+            />
+            <div className="error-wrapper">
+              {errors?.age && <ErrorMessage message={errors.age} />}
+            </div>
+          </label>
+          <label htmlFor="email">
+            Email:
+            <input
+              id="email"
+              type="string"
+              ref={email}
+              name="email"
+              placeholder="Enter an email"
+            />
+            <div className="error-wrapper">
+              {errors?.email && <ErrorMessage message={errors.email} />}
+            </div>
+          </label>
+          <label htmlFor="password">
+            Password:
+            <input
+              id="password"
+              type="password"
+              ref={password}
+              name="password"
+              placeholder="Enter a password"
+              onChange={handlePasswordStrength}
+            />
+            {passwordStrength && (
+              <span className="password-strength">{passwordStrength}</span>
             )}
-          </div>
-        </label>
-        <label htmlFor="gender">
-          Gender:
-          <select
-            id="gender"
-            defaultValue={'default'}
-            ref={gender}
-            name="gender"
-          >
-            <option value="default" disabled>
-              Select an option ...
-            </option>
-            <option>female</option>
-            <option>male</option>
-            <option>other</option>
-          </select>
-          <div className="error-wrapper">
-            {errors?.gender && <ErrorMessage message={errors.gender} />}
-          </div>
-        </label>
-        <Upload errors={errors?.upload} apply={applyFile} />
-        <label htmlFor="country">
-          Country:
-          <input
-            list="countries"
-            id="country"
-            type="text"
-            ref={country}
-            name="country"
-            placeholder="Start typing a country"
-          />
-          <datalist id="countries">
-            {countriesList.map((country) => (
-              <option key={country} value={country} />
-            ))}
-          </datalist>
-          <div className="error-wrapper">
-            {errors?.country && <ErrorMessage message={errors.country} />}
-          </div>
-        </label>
-        <label htmlFor="accept">
-          I accept terms and conditions
-          <input id="accept" type="checkbox" ref={accept} name="accept" />
-          <div className="error-wrapper">
-            {errors?.accept && <ErrorMessage message={errors.accept} />}
-          </div>
-        </label>
+            <div className="error-wrapper">
+              {errors?.password && <ErrorMessage message={errors.password} />}
+            </div>
+          </label>
+          <label htmlFor="password-check">
+            Confirm your password:
+            <input
+              id="password-check"
+              type="password"
+              ref={confirmedPassword}
+              name="confirmedPassword"
+              placeholder="Confirm your password"
+            />
+            <div className="error-wrapper">
+              {errors?.confirmedPassword && (
+                <ErrorMessage message={errors.confirmedPassword} />
+              )}
+            </div>
+          </label>
+          <label htmlFor="gender">
+            Gender:
+            <select
+              id="gender"
+              defaultValue={'default'}
+              ref={gender}
+              name="gender"
+            >
+              <option value="default" disabled>
+                Select an option ...
+              </option>
+              <option>female</option>
+              <option>male</option>
+              <option>other</option>
+            </select>
+            <div className="error-wrapper">
+              {errors?.gender && <ErrorMessage message={errors.gender} />}
+            </div>
+          </label>
+          <Upload errors={errors?.upload} apply={applyFile} />
+          <label htmlFor="country">
+            Country:
+            <input
+              list="countries"
+              id="country"
+              type="text"
+              ref={country}
+              name="country"
+              placeholder="Start typing a country"
+            />
+            <datalist id="countries">
+              {countriesList.map((country) => (
+                <option key={country} value={country} />
+              ))}
+            </datalist>
+            <div className="error-wrapper">
+              {errors?.country && <ErrorMessage message={errors.country} />}
+            </div>
+          </label>
+          <label htmlFor="accept">
+            I accept terms and conditions
+            <input id="accept" type="checkbox" ref={accept} name="accept" />
+            <div className="error-wrapper">
+              {errors?.accept && <ErrorMessage message={errors.accept} />}
+            </div>
+          </label>
+        </div>
         <input type="submit" value="Submit" />
       </form>
     </div>
