@@ -35,7 +35,7 @@ export const createValidationSchema = (countries: string[]) =>
       .oneOf([Yup.ref('password')], 'Passwords must match'),
     age: Yup.number()
       .required('Age is required')
-      .positive('Age should be fulfilled with positive integer'),
+      .min(0, 'Age should be not less than 0'),
     accept: Yup.boolean().oneOf([true], 'Accept terms is required'),
     country: Yup.string()
       .required('Country is required')

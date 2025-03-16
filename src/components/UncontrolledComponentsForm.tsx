@@ -6,13 +6,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectCountries } from '../store/features/countries/countries-slice.tsx';
 import { Link, useNavigate } from 'react-router-dom';
 import { Upload } from './Upload.tsx';
-import { addComponentFormData } from '../store/features/component-form/component-form-slice.tsx';
-import {
-  addLastUpdatedForm,
-  LastUpdatedFormEnum,
-} from '../store/features/last-updated-form/last-updated-form-slice.tsx';
+import { addFormsData } from '../store/features/forms-data/forms-data-slice.tsx';
 import { ValidationError } from 'yup';
 import { FormState } from '../store/models/form.model.tsx';
+import { getPasswordStrength } from '../utils/password-strength.tsx';
 
 export const UncontrolledComponentsForm: React.FC = () => {
   const dispatch = useDispatch();
@@ -28,12 +25,21 @@ export const UncontrolledComponentsForm: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string> | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [base64, setBase64] = useState<string | null>(null);
+  const [passwordStrength, setPasswordStrength] = useState<string | null>(null);
   const countriesList = useSelector(selectCountries);
   const applyFile = (base64: string, file: File) => {
     setFile(file);
     setBase64(base64);
   };
   const validationSchema = createValidationSchema(countriesList);
+
+  const handlePasswordStrength = () => {
+    const pass = password.current?.value || '';
+    const passwordStrength = getPasswordStrength(pass);
+    if (passwordStrength) {
+      setPasswordStrength(passwordStrength);
+    }
+  };
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = {
@@ -51,8 +57,7 @@ export const UncontrolledComponentsForm: React.FC = () => {
       .validate(data, { abortEarly: false })
       .then(() => {
         setErrors(null);
-        dispatch(addLastUpdatedForm(LastUpdatedFormEnum.COMPONENT_FORM));
-        dispatch(addComponentFormData({ ...data, upload: base64 }));
+        dispatch(addFormsData({ ...data, upload: base64 }));
         navigate('/');
       })
       .catch((err) => {
@@ -75,22 +80,39 @@ export const UncontrolledComponentsForm: React.FC = () => {
         <label htmlFor="name">
           Name:
           <input id="name" type="text" ref={name} name="name" />
-          {errors?.name && <ErrorMessage message={errors.name} />}
+          <div className="error-wrapper">
+            {errors?.name && <ErrorMessage message={errors.name} />}
+          </div>
         </label>
         <label htmlFor="age">
           Age:
           <input id="age" type="number" ref={age} name="age" />
-          {errors?.age && <ErrorMessage message={errors.age} />}
+          <div className="error-wrapper">
+            {errors?.age && <ErrorMessage message={errors.age} />}
+          </div>
         </label>
         <label htmlFor="email">
           Email:
           <input id="email" type="string" ref={email} name="email" />
-          {errors?.email && <ErrorMessage message={errors.email} />}
+          <div className="error-wrapper">
+            {errors?.email && <ErrorMessage message={errors.email} />}
+          </div>
         </label>
         <label htmlFor="password">
           Password:
-          <input id="password" type="password" ref={password} name="password" />
-          {errors?.password && <ErrorMessage message={errors.password} />}
+          <input
+            id="password"
+            type="password"
+            ref={password}
+            name="password"
+            onChange={handlePasswordStrength}
+          />
+          {passwordStrength && (
+            <span className="password-strength">{passwordStrength}</span>
+          )}
+          <div className="error-wrapper">
+            {errors?.password && <ErrorMessage message={errors.password} />}
+          </div>
         </label>
         <label htmlFor="password-check">
           Confirm your password:
@@ -100,9 +122,11 @@ export const UncontrolledComponentsForm: React.FC = () => {
             ref={confirmedPassword}
             name="confirmedPassword"
           />
-          {errors?.confirmedPassword && (
-            <ErrorMessage message={errors.confirmedPassword} />
-          )}
+          <div className="error-wrapper">
+            {errors?.confirmedPassword && (
+              <ErrorMessage message={errors.confirmedPassword} />
+            )}
+          </div>
         </label>
         <label htmlFor="gender">
           Gender:
@@ -119,7 +143,9 @@ export const UncontrolledComponentsForm: React.FC = () => {
             <option>male</option>
             <option>other</option>
           </select>
-          {errors?.gender && <ErrorMessage message={errors.gender} />}
+          <div className="error-wrapper">
+            {errors?.gender && <ErrorMessage message={errors.gender} />}
+          </div>
         </label>
         <Upload errors={errors?.upload} apply={applyFile} />
         <label htmlFor="country">
@@ -136,12 +162,16 @@ export const UncontrolledComponentsForm: React.FC = () => {
               <option key={country} value={country} />
             ))}
           </datalist>
-          {errors?.country && <ErrorMessage message={errors.country} />}
+          <div className="error-wrapper">
+            {errors?.country && <ErrorMessage message={errors.country} />}
+          </div>
         </label>
         <label htmlFor="accept">
           I accept terms and conditions
           <input id="accept" type="checkbox" ref={accept} name="accept" />
-          {errors?.accept && <ErrorMessage message={errors.accept} />}
+          <div className="error-wrapper">
+            {errors?.accept && <ErrorMessage message={errors.accept} />}
+          </div>
         </label>
         <input type="submit" value="Submit" />
       </form>

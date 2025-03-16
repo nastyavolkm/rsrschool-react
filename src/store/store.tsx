@@ -1,15 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-import componentFormReducer from './features/component-form/component-form-slice';
-import reactHooksFormReducer from './features/react-hook-form/react-hook-form-slice';
+import formsDataReducer from './features/forms-data/forms-data-slice.tsx';
 import countriesReducer from './features/countries/countries-slice';
-import lastUpdatedFormReducer from './features/last-updated-form/last-updated-form-slice';
 
 export const store = configureStore({
   reducer: {
-    componentForm: componentFormReducer,
-    reactHooksForm: reactHooksFormReducer,
+    formsData: formsDataReducer,
     countries: countriesReducer,
-    lastUpdatedForm: lastUpdatedFormReducer,
   },
 });
 

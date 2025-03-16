@@ -29,7 +29,9 @@ export const Upload: React.FC<UploadProps> = ({
         type="file"
         onChange={handleFileChange}
       />
-      {errors && <ErrorMessage message={errors} />}
+      <div className="error-wrapper">
+        {errors && <ErrorMessage message={errors} />}
+      </div>
     </label>
   );
 };

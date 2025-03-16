@@ -2,72 +2,52 @@ import { Link } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { FullFilledForm } from './FullFilledForm.tsx';
 import { useSelector } from 'react-redux';
-import { selectComponentForm } from '../store/features/component-form/component-form-slice.tsx';
-import { selectReactHookForm } from '../store/features/react-hook-form/react-hook-form-slice.tsx';
+import { selectFormsData } from '../store/features/forms-data/forms-data-slice.tsx';
 import './HomePage.css';
-import {
-  LastUpdatedFormEnum,
-  selectLastUpdatedForm,
-} from '../store/features/last-updated-form/last-updated-form-slice.tsx';
 
 export const HomePage: React.FC = () => {
-  const uncontrolledForm = useSelector(selectComponentForm);
-  const reactHooksForm = useSelector(selectReactHookForm);
-  const lastUpdatedForm: LastUpdatedFormEnum | null = useSelector(
-    selectLastUpdatedForm
-  );
-  const [highlightedForm, setHighlightedForm] =
-    useState<LastUpdatedFormEnum | null>(null);
+  const forms = useSelector(selectFormsData);
+  const [hasNewAddedForm, setHasNewAddedForm] = useState(false);
 
   useEffect(() => {
-    if (lastUpdatedForm) {
-      setHighlightedForm(lastUpdatedForm);
+    if (forms?.[0]) {
+      setHasNewAddedForm(true);
       const timer = setTimeout(() => {
-        setHighlightedForm(null);
+        setHasNewAddedForm(false);
       }, 3000);
 
       return () => clearTimeout(timer);
     }
-  }, [lastUpdatedForm]);
+  }, [forms?.[0]]);
 
   return (
     <div className="home">
-      <h1>Forms data</h1>
+      <nav className="home-navigation">
+        <Link className="home-navigation-link" to={'/form1'}>
+          Fill out an uncontrolled components form
+        </Link>
+        <Link className="home-navigation-link" to={'/form2'}>
+          Fill out react hooks form
+        </Link>
+      </nav>
+      <h3>Forms data</h3>
       <div className="home-wrapper">
-        <Link
-          className={`home-item ${
-            highlightedForm === LastUpdatedFormEnum.COMPONENT_FORM
-              ? 'highlighted'
-              : ''
-          }`}
-          to={'/form1'}
-        >
-          Uncontrolled Component Form
-          <div>
-            {uncontrolledForm ? (
-              <FullFilledForm form={uncontrolledForm} />
-            ) : (
-              <span className="no-data">No data yet</span>
-            )}
-          </div>
-        </Link>
-        <Link
-          className={`home-item ${
-            highlightedForm === LastUpdatedFormEnum.REACT_HOOK_FORM
-              ? 'highlighted'
-              : ''
-          }`}
-          to={'/form2'}
-        >
-          React Hooks Form
-          <div>
-            {reactHooksForm ? (
-              <FullFilledForm form={reactHooksForm} />
-            ) : (
-              <span className="no-data">No data yet</span>
-            )}
-          </div>
-        </Link>
+        {!forms?.[0] && (
+          <p className="no-data">
+            No forms data yet. Please fill out one of the form
+          </p>
+        )}
+        {forms?.[0] &&
+          forms.map((result, index) => (
+            <div
+              className={`home-item ${
+                index === 0 && hasNewAddedForm ? 'highlighted' : ''
+              }`}
+              key={index}
+            >
+              <FullFilledForm form={result} />
+            </div>
+          ))}
       </div>
     </div>
   );

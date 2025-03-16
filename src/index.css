@@ -28,8 +28,13 @@ body {
     display: flex;
     place-items: center;
     min-width: 320px;
-    min-height: 100vh;
+    max-height: 100vh;
     color: #191970;
+    height: 100%;
+}
+
+html {
+    height: 100%;
 }
 
 p, input {

@@ -3,11 +3,11 @@
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
-    gap: 10px;
     padding: 20px;
     border: 2px solid #535bf2;
     border-radius: 5px;
     width: 40vw;
+    position: relative;
 
     label {
         text-align: left;
@@ -25,6 +25,16 @@
                 border: 1px solid #1434A4;
             }
         }
+
+        .password-strength {
+            margin-left: 10px;
+            color: #646cff;
+            font-size: 13px;
+        }
+
+        .error-wrapper {
+            height: 20px;
+        }
     }
 
     input[type='submit'] {
@@ -34,6 +44,8 @@
         cursor: pointer;
         border-radius: 2px;
         height: 36px;
+        position: sticky;
+        bottom: 0;
 
         &:hover {
             background: #000088;
