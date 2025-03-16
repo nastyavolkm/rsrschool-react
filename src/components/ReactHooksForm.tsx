@@ -149,6 +149,7 @@ export const ReactHooksForm: React.FC = () => {
               <Upload
                 errors={errors.upload?.message}
                 apply={applyFile}
+                name="upload"
                 onChange={(file) => onChange(file)}
               />
             )}

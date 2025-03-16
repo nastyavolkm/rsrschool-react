@@ -1,4 +1,4 @@
-import React, { createRef, FormEvent, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
 import './UncontrolledComponentsForm.css';
 import { createValidationSchema } from '../utils/validation-schema.tsx';
 import { ErrorMessage } from './ErrorMessage.tsx';
@@ -14,27 +14,13 @@ import { getPasswordStrength } from '../utils/password-strength.tsx';
 export const UncontrolledComponentsForm: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const name = createRef<HTMLInputElement | null>();
-  const age = createRef<HTMLInputElement | null>();
-  const gender = createRef<HTMLSelectElement | null>();
-  const email = createRef<HTMLInputElement | null>();
-  const password = createRef<HTMLInputElement | null>();
-  const confirmedPassword = createRef<HTMLInputElement | null>();
-  const country = createRef<HTMLInputElement | null>();
-  const accept = createRef<HTMLInputElement>();
   const [errors, setErrors] = useState<Record<string, string> | null>(null);
-  const [file, setFile] = useState<File | null>(null);
-  const [base64, setBase64] = useState<string | null>(null);
   const [passwordStrength, setPasswordStrength] = useState<string | null>(null);
   const countriesList = useSelector(selectCountries);
-  const applyFile = (base64: string, file: File) => {
-    setFile(file);
-    setBase64(base64);
-  };
   const validationSchema = createValidationSchema(countriesList);
 
-  const handlePasswordStrength = () => {
-    const pass = password.current?.value || '';
+  const handlePasswordStrength = (event: ChangeEvent<HTMLInputElement>) => {
+    const pass = event.target.value || '';
     const passwordStrength = getPasswordStrength(pass);
     if (passwordStrength) {
       setPasswordStrength(passwordStrength);
@@ -42,34 +28,54 @@ export const UncontrolledComponentsForm: React.FC = () => {
   };
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = {
-      name: name.current?.value || null,
-      email: email.current?.value || null,
-      age: age.current?.value || null,
-      gender: gender.current?.value || null,
-      upload: file,
-      country: country.current?.value || null,
-      accept: accept.current?.checked || false,
-      password: password.current?.value || null,
-      confirmedPassword: confirmedPassword.current?.value || null,
-    } as FormState;
+    const formData = new FormData(event.currentTarget);
+    const file = formData.get('upload') as File | null;
+    let base64: string | null = null;
 
-    validationSchema
-      .validate(data, { abortEarly: false })
-      .then(() => {
-        setErrors(null);
-        dispatch(addFormsData({ ...data, upload: base64 }));
-        navigate('/');
-      })
-      .catch((err) => {
-        const validationErrors: Record<string, string> = {};
-        err.inner.forEach((error: ValidationError) => {
-          if (error.path) {
-            validationErrors[error.path] = error.message;
-          }
-        });
-        setErrors(validationErrors);
+    const convertFileToBase64 = (file: File): Promise<string> => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
       });
+    };
+
+    const processFormData = async () => {
+      if (file && file instanceof File && file.size > 0) {
+        base64 = await convertFileToBase64(file);
+      }
+      const data: FormState = {
+        name: (formData.get('name') as string) || null,
+        email: (formData.get('email') as string) || null,
+        age: (formData.get('age') as unknown as number) || null,
+        gender: (formData.get('gender') as 'male' | 'female' | 'other') || null,
+        upload: file,
+        country: (formData.get('country') as string) || null,
+        accept: formData.get('accept') === 'on',
+        password: (formData.get('password') as string) || null,
+        confirmedPassword:
+          (formData.get('confirmedPassword') as string) || null,
+      };
+
+      validationSchema
+        .validate(data, { abortEarly: false })
+        .then(() => {
+          setErrors(null);
+          dispatch(addFormsData({ ...data, upload: base64 }));
+          navigate('/');
+        })
+        .catch((err) => {
+          const validationErrors: Record<string, string> = {};
+          err.inner.forEach((error: ValidationError) => {
+            if (error.path) {
+              validationErrors[error.path] = error.message;
+            }
+          });
+          setErrors(validationErrors);
+        });
+    };
+    processFormData();
   };
   return (
     <div className="component-form-wrapper">
@@ -84,7 +90,6 @@ export const UncontrolledComponentsForm: React.FC = () => {
             <input
               id="name"
               type="text"
-              ref={name}
               name="name"
               placeholder="Enter a name"
             />
@@ -97,7 +102,6 @@ export const UncontrolledComponentsForm: React.FC = () => {
             <input
               id="age"
               type="number"
-              ref={age}
               name="age"
               placeholder="Enter an age"
             />
@@ -110,7 +114,6 @@ export const UncontrolledComponentsForm: React.FC = () => {
             <input
               id="email"
               type="string"
-              ref={email}
               name="email"
               placeholder="Enter an email"
             />
@@ -123,7 +126,6 @@ export const UncontrolledComponentsForm: React.FC = () => {
             <input
               id="password"
               type="password"
-              ref={password}
               name="password"
               placeholder="Enter a password"
               onChange={handlePasswordStrength}
@@ -140,7 +142,6 @@ export const UncontrolledComponentsForm: React.FC = () => {
             <input
               id="password-check"
               type="password"
-              ref={confirmedPassword}
               name="confirmedPassword"
               placeholder="Confirm your password"
             />
@@ -152,12 +153,7 @@ export const UncontrolledComponentsForm: React.FC = () => {
           </label>
           <label htmlFor="gender">
             Gender:
-            <select
-              id="gender"
-              defaultValue={'default'}
-              ref={gender}
-              name="gender"
-            >
+            <select id="gender" defaultValue={'default'} name="gender">
               <option value="default" disabled>
                 Select an option ...
               </option>
@@ -169,14 +165,13 @@ export const UncontrolledComponentsForm: React.FC = () => {
               {errors?.gender && <ErrorMessage message={errors.gender} />}
             </div>
           </label>
-          <Upload errors={errors?.upload} apply={applyFile} />
+          <Upload errors={errors?.upload} name="upload" />
           <label htmlFor="country">
             Country:
             <input
               list="countries"
               id="country"
               type="text"
-              ref={country}
               name="country"
               placeholder="Start typing a country"
             />
@@ -191,7 +186,7 @@ export const UncontrolledComponentsForm: React.FC = () => {
           </label>
           <label htmlFor="accept">
             I accept terms and conditions
-            <input id="accept" type="checkbox" ref={accept} name="accept" />
+            <input id="accept" type="checkbox" name="accept" />
             <div className="error-wrapper">
               {errors?.accept && <ErrorMessage message={errors.accept} />}
             </div>
