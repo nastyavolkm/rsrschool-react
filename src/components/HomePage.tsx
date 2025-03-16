@@ -8,9 +8,10 @@ import './HomePage.css';
 export const HomePage: React.FC = () => {
   const forms = useSelector(selectFormsData);
   const [hasNewAddedForm, setHasNewAddedForm] = useState(false);
+  const lastAddedForm = forms?.[0];
 
   useEffect(() => {
-    if (forms?.[0]) {
+    if (lastAddedForm) {
       setHasNewAddedForm(true);
       const timer = setTimeout(() => {
         setHasNewAddedForm(false);
@@ -18,7 +19,7 @@ export const HomePage: React.FC = () => {
 
       return () => clearTimeout(timer);
     }
-  }, [forms?.[0]]);
+  }, [lastAddedForm]);
 
   return (
     <div className="home">
@@ -27,10 +28,10 @@ export const HomePage: React.FC = () => {
           Fill out an uncontrolled components form
         </Link>
         <Link className="home-navigation-link" to={'/form2'}>
-          Fill out react hooks form
+          Fill out a react hooks form
         </Link>
       </nav>
-      <h3>Forms data</h3>
+      <h2>Forms data</h2>
       <div className="home-wrapper">
         {!forms?.[0] && (
           <p className="no-data">

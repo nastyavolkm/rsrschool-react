@@ -53,6 +53,7 @@ export const UncontrolledComponentsForm: React.FC = () => {
       password: password.current?.value || null,
       confirmedPassword: confirmedPassword.current?.value || null,
     } as FormState;
+
     validationSchema
       .validate(data, { abortEarly: false })
       .then(() => {
@@ -79,21 +80,39 @@ export const UncontrolledComponentsForm: React.FC = () => {
       <form className="component-form" onSubmit={handleSubmit}>
         <label htmlFor="name">
           Name:
-          <input id="name" type="text" ref={name} name="name" />
+          <input
+            id="name"
+            type="text"
+            ref={name}
+            name="name"
+            placeholder="Enter a name"
+          />
           <div className="error-wrapper">
             {errors?.name && <ErrorMessage message={errors.name} />}
           </div>
         </label>
         <label htmlFor="age">
           Age:
-          <input id="age" type="number" ref={age} name="age" />
+          <input
+            id="age"
+            type="number"
+            ref={age}
+            name="age"
+            placeholder="Enter an age"
+          />
           <div className="error-wrapper">
             {errors?.age && <ErrorMessage message={errors.age} />}
           </div>
         </label>
         <label htmlFor="email">
           Email:
-          <input id="email" type="string" ref={email} name="email" />
+          <input
+            id="email"
+            type="string"
+            ref={email}
+            name="email"
+            placeholder="Enter an email"
+          />
           <div className="error-wrapper">
             {errors?.email && <ErrorMessage message={errors.email} />}
           </div>
@@ -105,6 +124,7 @@ export const UncontrolledComponentsForm: React.FC = () => {
             type="password"
             ref={password}
             name="password"
+            placeholder="Enter a password"
             onChange={handlePasswordStrength}
           />
           {passwordStrength && (
@@ -121,6 +141,7 @@ export const UncontrolledComponentsForm: React.FC = () => {
             type="password"
             ref={confirmedPassword}
             name="confirmedPassword"
+            placeholder="Confirm your password"
           />
           <div className="error-wrapper">
             {errors?.confirmedPassword && (
@@ -156,6 +177,7 @@ export const UncontrolledComponentsForm: React.FC = () => {
             type="text"
             ref={country}
             name="country"
+            placeholder="Start typing a country"
           />
           <datalist id="countries">
             {countriesList.map((country) => (

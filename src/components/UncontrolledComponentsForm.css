@@ -6,8 +6,9 @@
     padding: 20px;
     border: 2px solid #535bf2;
     border-radius: 5px;
-    width: 40vw;
+    width: 50vw;
     position: relative;
+    overflow: auto;
 
     label {
         text-align: left;
@@ -47,7 +48,13 @@
         position: sticky;
         bottom: 0;
 
-        &:hover {
+        &:disabled {
+            background: #c0c0c0;
+            color: #646cff;
+            cursor: not-allowed;
+        }
+
+        &:hover:not(:disabled) {
             background: #000088;
             color: white;
         }
@@ -65,5 +72,7 @@
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    padding: 20px;
+    height: 100%;
 }
 

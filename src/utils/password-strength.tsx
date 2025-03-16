@@ -1,6 +1,6 @@
 export const getPasswordStrength = (pass: string) => {
   let score = 0;
-  if (!pass) return 'Very Weak';
+  if (!pass) return '';
   if (pass.length > 7) score++;
   if (/[A-Z]/.test(pass)) score++;
   if (/[a-z]/.test(pass)) score++;

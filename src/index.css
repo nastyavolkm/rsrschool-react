@@ -28,9 +28,12 @@ body {
     display: flex;
     place-items: center;
     min-width: 320px;
-    max-height: 100vh;
+    max-width: 100vw;
     color: #191970;
+    min-height: 100vh;
+    max-height: 100vh;
     height: 100%;
+    overflow: hidden;
 }
 
 html {
@@ -62,6 +65,10 @@ input[type='file'] {
 h1 {
     font-size: 3.2em;
     line-height: 1.1;
+}
+
+h2, h3 {
+    margin: 0;
 }
 
 button {

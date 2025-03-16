@@ -4,11 +4,13 @@ import React, { ChangeEvent } from 'react';
 type UploadProps = {
   errors: string | null | undefined;
   apply: (base64: string, file: File) => void;
+  onChange?: (value: File | null) => void;
 };
 
 export const Upload: React.FC<UploadProps> = ({
   errors,
   apply,
+  onChange,
 }: UploadProps) => {
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target?.files?.[0];
@@ -18,6 +20,9 @@ export const Upload: React.FC<UploadProps> = ({
         apply(reader.result as string, file);
       };
       reader.readAsDataURL(file);
+      if (onChange) {
+        onChange(file);
+      }
     }
   };
   return (

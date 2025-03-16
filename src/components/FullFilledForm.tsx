@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import './FullFilledForm.css';
 import { FormState } from '../store/models/form.model.tsx';
+import { ReactFormModel } from '../store/models/react-form.model.ts';
 
 type FullFilledFormProps = {
-  form: FormState;
+  form: FormState | ReactFormModel;
 };
 export const FullFilledForm: React.FC<FullFilledFormProps> = ({
   form,
@@ -31,8 +32,8 @@ export const FullFilledForm: React.FC<FullFilledFormProps> = ({
           <button onClick={handlePasswordClick}>Show password</button>
         )}
       </p>
-      <p>
-        Uploaded file:{' '}
+      <p className="fullfilled-form-image-wrapper">
+        Uploaded file:
         <img
           className="fullfilled-form-image"
           src={form.upload as string}
