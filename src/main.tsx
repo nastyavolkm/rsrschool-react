@@ -3,8 +3,6 @@ import './index.css';
 import App from './App';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { store } from './store/store';
 
 const rootElement = document.getElementById('root');
 if (rootElement) {
@@ -12,9 +10,7 @@ if (rootElement) {
   root.render(
     <React.StrictMode>
       <BrowserRouter basename="/rsrschool-react/">
-        <Provider store={store}>
-          <App />
-        </Provider>
+        <App />
       </BrowserRouter>
     </React.StrictMode>
   );
