@@ -1,54 +1,29 @@
-# React + TypeScript + Vite
+# Performance Analysis (Before Optimization)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Profiler Results
+Below are the performance metrics recorded using the React DevTools Profiler prior to optimization:
 
-Currently, two official plugins are available:
+### Commit Duration
+- The application committed updates in **3.2 seconds**.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Render Duration
+- Total time taken to render components: **35.9ms**.
 
-## Expanding the ESLint configuration
+## Component-Level Breakdown
+Here's the rendering time for key components:
+- **MainLayout**: **0.4ms**
+- **CountriesList**: **1.6ms**
+- **CountryItem**:
+    - With `key="Bulgaria"`: **1.2ms**
+    - Other `CountryItem` components: **0.1ms - 0.4ms**
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Render Duration of CountriesList by Interactions:
+- **Sort by population**: **6.9s for 27.5ms**
+- **Sort by name**: **9s for 24.9ms**
+- **Filter by region**: **13.1s for 11.9ms**
+- **Reset**: **15.1s for 109ms**
+- **Search by word**: **19.6s for 0.5ms**
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+![FG_before.png](FG_before.png)
+![RANKED_before.png](RANKED_before.png)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
