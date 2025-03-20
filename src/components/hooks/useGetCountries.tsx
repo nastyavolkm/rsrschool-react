@@ -6,10 +6,12 @@ export const useGetCountries = (): {
   countries: CountryModel[];
   isLoading: boolean;
   error: string;
+  regions: string[];
 } => {
   const [countries, setCountries] = useState<CountryModel[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [regions, setRegions] = useState<string[]>([]);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -20,6 +22,10 @@ export const useGetCountries = (): {
       try {
         setIsLoading(true);
         const response = await getCountries();
+        const regions = Array.from(
+          new Set(response.map((country) => country.region))
+        );
+        setRegions(regions);
         setCountries(response);
         setIsLoading(false);
       } catch (error: unknown) {
@@ -34,5 +40,5 @@ export const useGetCountries = (): {
     return () => abortController.abort();
   }, []);
 
-  return { countries, isLoading, error };
+  return { countries, isLoading, error, regions };
 };
