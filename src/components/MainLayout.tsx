@@ -1,4 +1,3 @@
-import React from 'react';
 import './MainLayout.css';
 import { useGetCountries } from './hooks/useGetCountries.tsx';
 import { CountriesList } from './CountriesList.tsx';

@@ -49,9 +49,11 @@ export const Tools = ({
         <input
           className="tools__search-input"
           value={searchValue}
-          onInput={(event) => setSearchValue(event.target.value)}
+          onInput={(event) =>
+            setSearchValue((event.target as HTMLInputElement).value)
+          }
           type="text"
-          placeholder="Type to search by name..."
+          placeholder="Type and click Search button..."
         />
         <button
           className="tools__search-button"

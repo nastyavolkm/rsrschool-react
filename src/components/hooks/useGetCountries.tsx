@@ -5,12 +5,12 @@ import { CountryModel } from '../../models/country-model.tsx';
 export const useGetCountries = (): {
   countries: CountryModel[];
   isLoading: boolean;
-  error: string;
+  error: string | null;
   regions: string[];
 } => {
   const [countries, setCountries] = useState<CountryModel[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string | null>('');
   const [regions, setRegions] = useState<string[]>([]);
 
   useEffect(() => {
