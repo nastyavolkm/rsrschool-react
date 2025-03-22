@@ -18,6 +18,7 @@ export const Tools = ({
   const [nameSort, setNameSort] = useState('desc');
   const [populationSort, setPopulationSort] = useState('desc');
   const [searchValue, setSearchValue] = useState('');
+  const [region, setRegion] = useState('default');
 
   const handleSorting = (type: 'name' | 'population') => () => {
     if (type === 'name') {
@@ -29,10 +30,16 @@ export const Tools = ({
     }
   };
 
+  const handleRegionChange = (value: string) => {
+    setRegion(value);
+    handleFilterByRegion(value);
+  };
+
   const resetAllFilters = () => {
     setNameSort('asc');
     setPopulationSort('asc');
     setSearchValue('');
+    setRegion('default');
     resetFilters();
   };
 
@@ -56,14 +63,16 @@ export const Tools = ({
       <div className="tools__filter">
         <select
           className="tools__filter-select"
-          defaultValue={'default'}
-          onChange={(event) => handleFilterByRegion(event.target.value)}
+          value={region}
+          onChange={(event) => handleRegionChange(event.target.value)}
         >
           <option disabled value="default">
             Select a region...
           </option>
           {regions.map((region) => (
-            <option key={region}>{region}</option>
+            <option key={region} value={region}>
+              {region}
+            </option>
           ))}
         </select>
       </div>

@@ -1,12 +1,13 @@
 import { CountryModel } from '../models/country-model.tsx';
 import './CountryItem.css';
 import { useCountryItem } from './hooks/useCountryItem.tsx';
+import React from 'react';
 
 type CountryItemProps = {
   country: CountryModel;
 };
 
-export const CountryItem = ({ country }: CountryItemProps) => {
+export const CountryItem = React.memo(({ country }: CountryItemProps) => {
   const { isVisited, addToLocalStorage } = useCountryItem(country);
   return (
     <div
@@ -23,4 +24,6 @@ export const CountryItem = ({ country }: CountryItemProps) => {
       <p>Region: {country.region}</p>
     </div>
   );
-};
+});
+
+CountryItem.displayName = 'CountryItem';

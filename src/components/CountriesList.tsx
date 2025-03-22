@@ -1,11 +1,12 @@
 import { CountryModel } from '../models/country-model.tsx';
 import { CountryItem } from './CountryItem.tsx';
 import './CountriesList.css';
+import React from 'react';
 
 type CountriesListProps = {
   countries: CountryModel[];
 };
-export const CountriesList = ({ countries }: CountriesListProps) => {
+export const CountriesList = React.memo(({ countries }: CountriesListProps) => {
   return (
     <div>
       {countries?.length < 1 && <p>No countries found</p>}
@@ -18,4 +19,6 @@ export const CountriesList = ({ countries }: CountriesListProps) => {
       )}
     </div>
   );
-};
+});
+
+CountriesList.displayName = 'CountriesList';

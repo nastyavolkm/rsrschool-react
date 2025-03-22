@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { CountryModel } from '../../models/country-model.tsx';
 
 export const useToolsResults = (
@@ -10,52 +10,75 @@ export const useToolsResults = (
   sortCountries: (type: 'name' | 'population', order: 'asc' | 'desc') => void;
   resetFilters: () => void;
 } => {
-  const [filteredCountries, setFilteredCountries] = useState(countries);
-  const [filteredAfterFilter, setFilteredAfterFilter] = useState(countries);
+  const [filters, setFilters] = useState<{
+    region: string;
+    searchValue: string;
+    sortType: 'name' | 'population' | null;
+    sortOrder: 'asc' | 'desc' | null;
+  }>({
+    region: '',
+    searchValue: '',
+    sortType: null,
+    sortOrder: null,
+  });
 
-  useEffect(() => {
-    setFilteredCountries(countries);
-    setFilteredAfterFilter(countries);
-  }, [countries]);
+  const filteredCountries = useMemo(() => {
+    let filtered = countries;
 
-  const filterCountries = (region: string) => {
-    const filteredCountries = filteredAfterFilter.filter(
-      (country) => country.region === region
-    );
-    setFilteredCountries(filteredCountries);
-    setFilteredAfterFilter(filteredCountries);
-  };
+    if (filters.region) {
+      filtered = filtered.filter(
+        (country) => country.region === filters.region
+      );
+    }
 
-  const searchCountries = (searchValue: string) => {
-    const countries = filteredAfterFilter.filter((country) =>
-      country.name.common.toLowerCase().includes(searchValue.toLowerCase())
-    );
-    setFilteredCountries(countries);
-  };
+    if (filters.searchValue) {
+      const searchValueLowerCase = filters.searchValue.toLowerCase();
+      filtered = filtered.filter((country) =>
+        country.name.common.toLowerCase().includes(searchValueLowerCase)
+      );
+    }
 
-  const sortCountries = (
-    type: 'name' | 'population',
-    order: 'asc' | 'desc'
-  ) => {
-    const countries = [...filteredCountries].sort((a, b) => {
-      if (type === 'name') {
-        return (
-          a.name.common.localeCompare(b.name.common) *
-          (order === 'asc' ? 1 : -1)
-        );
-      } else {
-        return order === 'asc'
-          ? a.population - b.population
-          : b.population - a.population;
-      }
+    if (filters.sortType && filters.sortOrder) {
+      filtered = [...filtered].sort((a, b) => {
+        if (filters.sortType === 'name') {
+          return (
+            a.name.common.localeCompare(b.name.common) *
+            (filters.sortOrder === 'asc' ? 1 : -1)
+          );
+        } else {
+          return filters.sortOrder === 'asc'
+            ? a.population - b.population
+            : b.population - a.population;
+        }
+      });
+    }
+
+    return filtered;
+  }, [countries, filters]);
+
+  const filterCountries = useCallback((region: string) => {
+    setFilters((f) => ({ ...f, region }));
+  }, []);
+
+  const searchCountries = useCallback((searchValue: string) => {
+    setFilters((f) => ({ ...f, searchValue }));
+  }, []);
+
+  const sortCountries = useCallback(
+    (type: 'name' | 'population', order: 'asc' | 'desc') => {
+      setFilters((f) => ({ ...f, sortType: type, sortOrder: order }));
+    },
+    []
+  );
+
+  const resetFilters = useCallback(() => {
+    setFilters({
+      region: '',
+      searchValue: '',
+      sortType: null,
+      sortOrder: null,
     });
-    setFilteredCountries(countries);
-    setFilteredAfterFilter(countries);
-  };
-
-  const resetFilters = () => {
-    setFilteredCountries(countries);
-  };
+  }, []);
 
   return {
     filteredCountries,
