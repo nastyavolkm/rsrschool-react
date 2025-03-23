@@ -35,22 +35,24 @@ Here's the rendering time for key components:
 Below are the performance metrics recorded using the React DevTools Profiler after the optimization (adding React.memo to `CountriesList` and `CountryItem` components and adding `useCallback`and `useMemo` to filter functions):
 
 ### Commit Duration
-- The application committed updates in **1.8 seconds**.
+- The application committed updates in **1.9 seconds**.
 
 ### Render Duration
-- Total time taken to render components: **5.8ms**.
+- Total time taken to render components: **7.7ms**.
 
 ## Component-Level Breakdown
 Here's the rendering time for key components:
-- **MainLayout**: **1.9ms**
-- **CountriesList**: **2ms**
+- **MainLayout**: **2.2ms**
+- **CountriesList**: **2.7ms**
+- **Tools**: **1ms**
+  ![initial_after.png](initial_after.png)
 
 ### Render Duration of CountriesList by Interactions:
-- **Sort by population**: **1.8s for 5.8ms**
-- **Sort by name**: **3.7s for 3.9ms**
-- **Filter by region**: **7.3s for 2.8ms**
-- **Reset**: **9s for 94.6ms**
-- **Search by word**: **12.7s for 1.2ms**
+- **Sort by population**: **2.3s for 3.7ms**
+- **Sort by name**: **4.1s for 4.3ms**
+- **Filter by region**: **10.7s for 2.7ms**
+- **Reset**: **17s for 144ms**
+- **Search by word**: **21.5s for 1.4ms**
 
 ![FG_after.png](FG_after.png)
 ![RANKED_after.png](RANKED_after.png)
